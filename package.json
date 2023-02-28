@@ -1,0 +1,61 @@
+{
+  "name": "Whats-Payment",
+  "version": "1.0.0",
+  "description": "WhatsApp Bot Store Using Lib Baileys Multi Device",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "termux",
+    "whatsapp-bot",
+    "whatsapp-baileys",
+    "baileys-md",
+    "bot-wa",
+    "bot-md",
+    "whatsapp-multi-device"
+  ],
+  "base": "https://github.com/resahdevv/WhatsApp-Ai",
+  "author": "RezaDevv",
+  "license": "TU",
+  "dependencies": {
+    "@adiwajshing/baileys": "4.4.0",
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "@hapi/boom": "^10.0.0",
+    "awesome-phonenumber": "^2.64.0",
+    "axios": "^1.3.3",
+    "chalk": "^4.1.2",
+    "cheerio": "^1.0.0-rc.12",
+    "crypto": "^1.0.1",
+    "figlet": "^1.5.2",
+    "file-type": "^16.5.3",
+    "md5": "^2.3.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "form-data": "^4.0.0",
+    "moment-timezone": "^0.5.34",
+    "fs": "0.0.1-security",
+    "human-readable": "^0.2.1",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.1",
+    "node-webpmux": "^3.1.3",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
+    "performance-now": "^2.1.0",
+    "pino": "^7.0.5",
+    "qrcode-terminal": "^0.12.0",
+    "util": "^0.12.4"
+  },
+  "directories": {
+    "lib": "lib",
+    "src": "src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/resahdevv/WhatsApp-Ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/resahdevv/WhatsApp-Ai/issues"
+  },
+  "homepage": "https://github.com/resahdevv/WhatsApp-Ai#readme"
+}
