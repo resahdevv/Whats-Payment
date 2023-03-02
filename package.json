@@ -18,7 +18,7 @@
   ],
   "base": "https://github.com/resahdevv/WhatsApp-Ai",
   "author": "RezaDevv",
-  "license": "TU",
+  "license": "MIT",
   "dependencies": {
     "@adiwajshing/baileys": "4.4.0",
     "@adiwajshing/keyed-db": "^0.2.4",

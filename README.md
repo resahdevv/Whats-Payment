@@ -3,16 +3,16 @@
 ***Whats Payment dibuat dengan nodejs menggunakan library [Bailyes](https://github.com/adiwajshing/Baileys)***
 
 ## Baca Dulu Mas Mba
-Terdapat 4  feature transaksi 
+Terdapat 5  feature transaksi 
 
-📍 .depomanual
-📍 .topup
-📍 .pulsamenu
-📍 .plnmenu
+<br>📍 .depomanual
+<br>📍 .topup
+<br>📍 .pulsamenu
+<br>📍 .emoneymenu
+<br>📍 .plnmenu
 
 ## Catatan
-Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi Ke Pemilikan, Pengguna 
-Program Bajakan Dapat Dapat Dikenakan Sanksi atau Hukuman Pidana.
+Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi MIT yang artinya perangkat lunak bebas permisif yang berasal dari Massachusetts Institute of Technology. Sebagai lisensi permisif, Lisensi MIT memberikan batasan yang sangat longgar tentang penggunaan kembali dan memiliki kompatibilitas lisensi yang sangat baik.
 
 <p align="center">
 	<img src="https://telegra.ph/file/4be1496d02b3d2ce1f03b.png" width="35%" style="margin-left: auto;margin-right: auto;display: block;">
@@ -94,8 +94,13 @@ $ npm start
 $ pkg install yarn
 $ yarn
 ```
+
+## WARNING
+* Mungkin software ini tidak akan berjalan secara optimal diwindows dan termux
+* Direkomendasikan menggunakan linux
+
 ## Thanks To
-* [`ResahDEvv`](https://github.com/resahdevv)
+* [`ResahDevv`](https://github.com/resahdevv)
 
 ```Thanks to all who have participated in the development of this script```
 
@@ -103,6 +108,6 @@ $ yarn
 <a href="https://saweria.co/rezadevv" target="_blank"><img src="https://user-images.githubusercontent.com/26188697/180601310-e82c63e4-412b-4c36-b7b5-7ba713c80380.png" alt="Donate For Yusril" height="41" width="174"></a>
 
 ## License
-[The Unlicense](https://github.com/resahdevv/Whats-Pay/LICENSE)
+[MIT](https://github.com/resahdevv/Whats-Pay/LICENSE)
 
 ```Copyright (c) 2023 RezaDevv```

@@ -39,19 +39,18 @@ global.signatureapigames = "Signature";
 
 // Start Vip Reseler
 global.reselerkey = "Reseler Key";
-global.reseleridkey = "Reseler Key",
+global.reseleridkey = "Reseler IdKey",
 // End Reseler
 
 global.tanggalserver = `${moment.tz('Asia/Jakarta').format('DD/MM/YY')}`;
 global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`;
-
 
   let api_key = global.reselerkey
   let sign = md5(global.reseleridkey + global.reselerkey)
   let axios = require('axios')
   axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: api_key,sign: sign}))}).then((res) => {
     global.saldoserver = `${formatmoney(res.data.data.balance)}`;
-})
+})   
 
 global.zenzkey = "Your Key";
 global.lolkey = "Your Key";
