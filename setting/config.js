@@ -7,7 +7,6 @@
 const fs = require("fs");
 const chalk = require("chalk");
 const moment = require('moment-timezone');
-const md5 = require('md5');
 
 function formatmoney(n, opt = {}) {
   if (!opt.current) opt.current = "IDR"
@@ -27,33 +26,34 @@ global.APIKeys = {
 };
 
 // Start suplier digiflazz
-global.username = "Username";
-global.production = "Productio Code";
+global.username = "Your Key";
+global.production = "Your Key";
 // End digiflazz
 
 //Start api games
-global.merchantapigames = "Merchant";
-global.secretapigames = "Secret Key";
-global.signatureapigames = "Signature";
+global.merchantapigames = "Your Key";
+global.secretapigames = "Your Key";
+global.signatureapigames = "Your Key";
 // End games
 
 // Start Vip Reseler
-global.reselerkey = "Reseler Key";
-global.reseleridkey = "Reseler IdKey",
+global.reselerkey = "Your Key";
+global.reseleridkey = "Your Key",
 // End Reseler
+
+global.zenzkey = "Your Key";
+global.lolkey = "Your Key";
 
 global.tanggalserver = `${moment.tz('Asia/Jakarta').format('DD/MM/YY')}`;
 global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`;
 
-  let api_key = global.reselerkey
+  let md5 = require('md5')
   let sign = md5(global.reseleridkey + global.reselerkey)
   let axios = require('axios')
-  axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: api_key,sign: sign}))}).then((res) => {
-    global.saldoserver = `${formatmoney(res.data.data.balance)}`;
+  axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: global.reselerkey,sign: sign}))}).then((res) => {
+    global.saldoreseller = `${formatmoney(res.data.data.balance)}`;
 })   
 
-global.zenzkey = "Your Key";
-global.lolkey = "Your Key";
 global.owner = ["6285742632270"];
 global.packname = "Whats Payment";
 global.author = "RezaDevv";
