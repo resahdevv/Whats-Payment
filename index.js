@@ -640,7 +640,7 @@ async function startEza() {
       console.log(color("Whats Payment Version 1.0.0", "cyan"));
       console.log(color("Ketik .menu untuk menampilkan menu"));
       client.sendMessage(`${owner}@s.whatsapp.net`, {
-        text: `*_Hi Owner Whats Payment, Server Whats Payment Berhasil Aktif_*\n\n*_Detail Configurasi Server :_*\n_Owner : ${owner}_\n_Saldo Reseller : ${saldoreseller}_\n_Profit : ${untung}_\n_Packname : ${packname}_\n_Author : ${author}_\n_Session : ${session}_\n_IP Server : ${ipserver}_\n\n*_Tanggal Server : ${tanggalserver}_*\n*_Waktu Server : ${waktuserver}_*`,
+        text: `*_Hi Owner Whats Payment, Server Whats Payment Berhasil Aktif_*\n\n*_Detail Configurasi Server :_*\n_Owner : ${owner}_\n_Saldo Reseller : ${reselersaldo}_\n_Profit : ${untung}_\n_Packname : ${packname}_\n_Author : ${author}_\n_Session : ${session}_\n_IP Server : ${ipserver}_\n\n*_Tanggal Server : ${tanggalserver}_*\n*_Waktu Server : ${waktuserver}_*`,
       });
     }
     // console.log('Connected...', update)

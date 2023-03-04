@@ -781,7 +781,7 @@ fs.unlinkSync(`./src/depo/${sender}3.json`)
 reply('*_Sukses Cancel Pln_*')
 break;
 case "cancelemoney" :
-if(!fs.existsSync(`./src/depo/${sender}2.json`)) return reply('*_Kamu tidak melakukan pengisian saldo e-money_*')
+if(!fs.existsSync(`./src/depo/${sender}2.json`)) return reply('*_Anda Tidak Melakukan Transaksi E-Money')
 fs.unlinkSync(`./src/depo/${sender}2.json`)
 reply('*_Sukses Cancel Emoney_*')
 break;
