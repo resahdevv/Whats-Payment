@@ -51,7 +51,7 @@ global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`;
   let sign = md5(global.reseleridkey + global.reselerkey)
   let axios = require('axios')
   axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: global.reselerkey,sign: sign}))}).then((res) => {
-    global.reselersaldo = `${formatmoney(res.data.data.balance)}`;
+    global.resellersaldo = `${formatmoney(res.data.data.balance)}`;
 })   
 
 let http = require('http')
