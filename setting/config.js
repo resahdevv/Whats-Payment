@@ -54,6 +54,13 @@ global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`;
     global.saldoreseller = `${formatmoney(res.data.data.balance)}`;
 })   
 
+let http = require('http')
+            http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
+            resp.on('data', function(ip) {
+                (global.ipserver = ip);
+            })
+          })
+
 global.owner = ["6285742632270"];
 global.packname = "Whats Payment";
 global.author = "RezaDevv";

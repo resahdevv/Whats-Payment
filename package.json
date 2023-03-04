@@ -33,6 +33,7 @@
     "md5": "^2.3.0",
     "fluent-ffmpeg": "^2.1.2",
     "form-data": "^4.0.0",
+    "child_process": "^1.0.2",
     "moment-timezone": "^0.5.34",
     "fs": "0.0.1-security",
     "human-readable": "^0.2.1",

@@ -12,6 +12,7 @@ const chalk = require("chalk");
 // new module
 const axios = require('axios');
 const os = require('os');
+const { exec } = require("child_process");
 const speed = require('performance-now');
 const { sizeFormatter } = require('human-readable');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
@@ -160,6 +161,10 @@ const fetchJson = async (url, options) => {
   } catch (err) {
       return err
   }
+}
+
+const sleep = async (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const runtime = function(seconds) {
@@ -1348,7 +1353,19 @@ reply(lisya)
       })
       break;
       }
-      
+      case 'restart' :
+      if (!isCreator) return m.reply(mess.owner)
+      await m.reply(`_Restarting ${packname}_`)
+      try{
+        await client.sendMessage(from, {text: "*_Succes_*"})
+        await sleep(3000)
+        exec(`npm start`)
+      } catch (err) {
+        exec(`node index.js`)
+        await sleep(4000)
+        m.reply('*_Sukses_*')
+      }
+      break;
       case 'whoisip': {
         if (isBanned) return m.reply(`*You Have Been Banned*`)
         if (!text) throw `Example : ${prefix + command} 192.168.152.24`
