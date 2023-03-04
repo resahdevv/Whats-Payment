@@ -38,19 +38,19 @@ global.APIKeys = {
 };
 
 // Start suplier digiflazz
-global.username = "Username";
-global.production = "Productio Code";
+global.username = "Your Api";
+global.production = "Your Api";
 // End digiflazz
 
 //Start api games
-global.merchantapigames = "Merchant";
-global.secretapigames = "Secret Key";
-global.signatureapigames = "Signature";
+global.merchantapigames = "Your Api";
+global.secretapigames = "Your Api";
+global.signatureapigames = "Your Api";
 // End games
 
 // Start Vip Reseler
-global.reselerkey = "Reseller Key";
-global.reseleridkey = "Reseler IdKey",
+global.reselerkey = "Your Api";
+global.reseleridkey = "Your Api",
 // End Reseler
 
 global.zenzkey = "Your Api";
