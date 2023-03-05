@@ -637,8 +637,13 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       switch (command) {
         case "help": case "menu":
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-            anu = `*Whats Payment Versi 1.0.0*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}topup\n📍 ${prefix}depomanual\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${moment.tz('Asia/Jakarta').format('DD/MM/YY')}_*\n*_🕒 Waktu Server : ${moment.tz('Asia/Jakarta').format('HH:mm:ss')}_*`
+            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}topup\n📍 ${prefix}depomanual\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${moment.tz('Asia/Jakarta').format('DD/MM/YY')}_*\n*_🕒 Waktu Server : ${moment.tz('Asia/Jakarta').format('HH:mm:ss')}_*`
             client.sendText(m.chat, anu, m)   
+        break;
+        case "ownermenu" :
+        if (!isCreator) throw mes.owner
+        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}updatelayanan\n📍 ${prefix}creditreseller\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
+        client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
           if (isBanned) return m.reply(`*You Have Been Banned*`)
@@ -1014,6 +1019,21 @@ case "updatelayanan" : {
       if (!isCreator) return reply(mess.owner)
       reply('*_Deposit Tidak Akan Dilanjutkan_*')
       client.sendMessage(`${text}`, {text: `*_Topup Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
+      break;
+      case "creditreseller" :
+        if (!isCreator) return m.reply(mess.owner)
+        let md5 = require('md5')
+        let sign = md5(reseleridkey + reselerkey)
+        let axios = require('axios')
+        axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: reselerkey,sign: sign}))}).then((res) => {
+          if (res.data.result == false) {
+            m.reply(`*_${res.data.message}_*`)
+          }
+          if (res.data.message == 'Successfully got your account details.') {
+            anjay = `*── 「 Balance Vip Reseller 」 ──*\n\n*_Name : ${res.data.data.full_name}_*\n*_Username : ${res.data.data.username}_*\n*_Balance : ${formatmoney(res.data.data.balance)}\n*_Point : ${res.data.data.point}_*\n*_Level : ${res.data.data.level}_*\n*_Register :${res.data.data.registered}_*`
+            client.sendText(m.chat, anjay, m) 
+          }
+      })  
       break;
     case "listdmff" : 
     if (isBanned) return m.reply(`*You Have Been Banned*`)
