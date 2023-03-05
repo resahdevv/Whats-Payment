@@ -1024,13 +1024,13 @@ case "updatelayanan" : {
         if (!isCreator) return m.reply(mess.owner)
         let md5 = require('md5')
         let sign = md5(reseleridkey + reselerkey)
-        let axios = require('axios')
+        var axios = require('axios')
         axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: reselerkey,sign: sign}))}).then((res) => {
           if (res.data.result == false) {
             m.reply(`*_${res.data.message}_*`)
           }
           if (res.data.message == 'Successfully got your account details.') {
-            anjay = `*── 「 Balance Vip Reseller 」 ──*\n\n*_Name : ${res.data.data.full_name}_*\n*_Username : ${res.data.data.username}_*\n*_Balance : ${formatmoney(res.data.data.balance)}\n*_Point : ${res.data.data.point}_*\n*_Level : ${res.data.data.level}_*\n*_Register :${res.data.data.registered}_*`
+            anjay = `*── 「 Balance Vip Reseller 」 ──*\n\n*_Name : ${res.data.data.full_name}_*\n*_Username : ${res.data.data.username}_*\n*_Balance : ${formatmoney(res.data.data.balance)}_*\n*_Point : ${res.data.data.point}_*\n*_Level : ${res.data.data.level}_*\n*_Register : ${res.data.data.registered}_*`
             client.sendText(m.chat, anjay, m) 
           }
       })  
