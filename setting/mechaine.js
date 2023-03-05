@@ -16,8 +16,8 @@ const { exec } = require("child_process");
 const speed = require('performance-now');
 const { sizeFormatter } = require('human-readable');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
-const md5 = require('md5');
 const moment = require('moment-timezone');
+const md5 = require('md5');
 // end
 
 //code by rezadevv
@@ -642,7 +642,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
         break;
         case "ownermenu" :
         if (!isCreator) throw mes.owner
-        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}updatelayanan\n📍 ${prefix}creditreseller\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
+        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}updatelayanan\n📍 ${prefix}creditreseller\n📍 ${prefix}creditdigiflazz\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
         client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
@@ -1020,11 +1020,11 @@ case "updatelayanan" : {
       reply('*_Deposit Tidak Akan Dilanjutkan_*')
       client.sendMessage(`${text}`, {text: `*_Topup Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
       break;
-      case "creditreseller" :
+      case "creditreseller" : {
         if (!isCreator) return m.reply(mess.owner)
         let md5 = require('md5')
         let sign = md5(reseleridkey + reselerkey)
-        var axios = require('axios')
+        let axios = require('axios')
         axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: reselerkey,sign: sign}))}).then((res) => {
           if (res.data.result == false) {
             m.reply(`*_${res.data.message}_*`)
@@ -1033,7 +1033,33 @@ case "updatelayanan" : {
             anjay = `*── 「 Balance Vip Reseller 」 ──*\n\n*_Name : ${res.data.data.full_name}_*\n*_Username : ${res.data.data.username}_*\n*_Balance : ${formatmoney(res.data.data.balance)}_*\n*_Point : ${res.data.data.point}_*\n*_Level : ${res.data.data.level}_*\n*_Register : ${res.data.data.registered}_*`
             client.sendText(m.chat, anjay, m) 
           }
-      })  
+      })
+    }
+      break;
+      case "creditdigiflazz" : {
+        if (!isCreator) return m.reply(mess.owner)
+        let md5 = require('md5')
+        let fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
+        let signa = md5(usernamekey + productionkey + `depo`)
+        let data = {
+          cmd : `deposit`,
+          username : usernamekey,
+          sign : signa,
+        }
+        fetch(`https://api.digiflazz.com/v1/cek-saldo`, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then((data) => {
+          anjir = `*── 「 Balance DigiFlazz 」 ──*\n\n*_Balance : ${formatmoney(data.data.deposit)}_*`
+          client.sendText(m.chat, anjir, m) 
+        })
+      }
+
       break;
     case "listdmff" : 
     if (isBanned) return m.reply(`*You Have Been Banned*`)

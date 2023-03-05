@@ -25,36 +25,21 @@ Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi MIT yang artinya 
 
 - Ganti Apikey Anda Pada ```./setting/config```
 ``` ts
-// Website Api
-global.APIs = {
-  zenz: "https://api.zahwazein.xyz",
-  lol: "https://api.lolhuman.xyz",
-};
-
-// Apikey Website Api
-global.APIKeys = {
-  "https://api.zahwazein.xyz": "Your Api",
-  "https://api.lolhuman.xyz": "Your Api",
-};
-
 // Start suplier digiflazz
-global.username = "Your Api";
-global.production = "Your Api";
+global.usernamekey = "Your Key";
+global.productionkey = "Your Key";
 // End digiflazz
 
 //Start api games
-global.merchantapigames = "Your Api";
-global.secretapigames = "Your Api";
-global.signatureapigames = "Your Api";
+global.merchantapigames = "Your Key";
+global.secretapigames = "Your Key";
+global.signatureapigames = "Your Key";
 // End games
 
 // Start Vip Reseler
-global.reselerkey = "Your Api";
-global.reseleridkey = "Your Api",
+global.reselerkey = "Your Key";
+global.reseleridkey = "Your Key",
 // End Reseler
-
-global.zenzkey = "Your Api";
-global.lolkey = "Your Api";
 ```
 ## Mengatur Keuntungan
 - Atur Keuntungan Transaksi ```./setting/mechaine```

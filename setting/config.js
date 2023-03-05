@@ -21,8 +21,8 @@ global.APIKeys = {
 };
 
 // Start suplier digiflazz
-global.username = "Your Key";
-global.production = "Your Key";
+global.usernamekey = "Your Key";
+global.productionkey = "Your Key";
 // End digiflazz
 
 //Start api games
