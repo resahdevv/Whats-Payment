@@ -19,25 +19,24 @@ global.APIKeys = {
   "https://api.zahwazein.xyz": "Your Key",
   "https://api.lolhuman.xyz": "Your Key",
 };
+// Zenzkey & Lolkey
+global.zenzkey = "Your Key";
+global.lolkey = "Your Key";
 
-// Start suplier digiflazz
+// Start Suplier
+//======>DIGIFLAZZ<======//
 global.usernamekey = "Your Key";
 global.productionkey = "Your Key";
-// End digiflazz
-
-//Start api games
+//======>APIGAMES<======//
 global.merchantapigames = "Your Key";
 global.secretapigames = "Your Key";
 global.signatureapigames = "Your Key";
-// End games
-
-// Start Vip Reseler
+//======>VIPRESELLER<======//
 global.reselerkey = "Your Key";
 global.reseleridkey = "Your Key",
-// End Reseler
-
-global.zenzkey = "Your Key";
-global.lolkey = "Your Key";
+//======>ATLANTIC<======//
+global.atlantickey = "Your Key",
+// End Suplier
 
 global.tanggalserver = `${moment.tz('Asia/Jakarta').format('DD/MM/YY')}`;
 global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`; 
@@ -49,10 +48,21 @@ let http = require('http')
             })
           })
 
+// Setting Limit
+global.limitrate = "1"; // Pengurangan Satu Limit Setiap Trx
+global.hargalimit = "200"; // Harga 1 Limit Rp
+global.profit = `${global.hargalimit} / ${global.limitrate}`;   
+// End Setting Limit 
+
+// Set Minimal
+global.minimaldepo = "10000";
+global.minimallimit = "100";
+// End Minimal
+
 global.owner = ["6285742632270"];
 global.packname = "Whats Payment";
 global.author = "RezaDevv";
-global.versionscript = "1.1.0";
+global.versionscript = "1.3.0";
 global.session = "whats-payment";
 global.mess = {
   wait: "Loading...",

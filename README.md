@@ -3,10 +3,11 @@
 ***Whats Payment dibuat dengan nodejs menggunakan library [Bailyes](https://github.com/adiwajshing/Baileys)***
 
 ## Baca Dulu Mas Mba
-Terdapat 5  feature transaksi 
+Terdapat 6 feature transaksi 
 
 <br>📍 .depomanual
-<br>📍 .topup
+<br>📍 .topup (sultan)
+<br>📍 .listgame
 <br>📍 .pulsamenu
 <br>📍 .emoneymenu
 <br>📍 .plnmenu
@@ -19,33 +20,35 @@ Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi MIT yang artinya 
 </p>
 
 ## Get & Change Suplier Api Key
-- Silakan buat apikey api games [Disini](https://member.apigames.id/login)
+- Silakan buat apikey api games [Disini](https://member.apigames.id/)
 - Silakan buat apikey Digiflazz [Disini](https://member.digiflazz.com/)
 - Silakan buat apikey VipReseller [Disini](https://vip-reseller.co.id/)
 
 - Ganti Apikey Anda Pada ```./setting/config```
 ``` ts
-// Start suplier digiflazz
+// Start Suplier
+//======>DIGIFLAZZ<======//
 global.usernamekey = "Your Key";
 global.productionkey = "Your Key";
-// End digiflazz
-
-//Start api games
+//======>APIGAMES<======//
 global.merchantapigames = "Your Key";
 global.secretapigames = "Your Key";
 global.signatureapigames = "Your Key";
-// End games
-
-// Start Vip Reseler
+//======>VIPRESELLER<======//
 global.reselerkey = "Your Key";
 global.reseleridkey = "Your Key",
-// End Reseler
+//======>ATLANTIC<======//
+global.atlantickey = "Your Key",
+// End Suplier
 ```
 ## Mengatur Keuntungan
-- Atur Keuntungan Transaksi ```./setting/mechaine```
+- Atur Keuntungan Transaksi ```./setting/config```
 ``` ts
-var profit = 100; // Keuntungan
-    global.untung = `${profit}`;
+// Setting Limit
+global.limitrate = "1"; // Pengurangan Satu Limit Setiap Trx
+global.hargalimit = "200"; // Harga 1 Limit Rp
+global.profit = `${global.hargalimit} / ${global.limitrate}`;   
+// End Setting Limit 
 ```
 
 ## UNTUK PENGGUNA WINDOWS/RDP
@@ -54,9 +57,10 @@ var profit = 100; // Keuntungan
 * Unduh & Instal NodeJS [`Klik Disini`](https://nodejs.org/en/download)
 
 ```bash
-$ git clone https://github.com/resahdevv/WhatsApp-Ai.git
-$ cd WhatsApp-Ai
+$ git clone https://github.com/resahdevv/Whats-Payment.git
+$ npm install --global yarn
 $ yarn
+$ cd Whats-Payment
 $ npm start
 ```
 
@@ -67,8 +71,8 @@ $ apt update && apt upgrade
 $ apt install git -y
 $ apt install nodejs -y
 $ apt install ffmpeg -y
-$ git clone https://github.com/resahdevv/WhatsApp-Ai.git
-$ cd WhatsApp-Ai
+$ git clone https://github.com/resahdevv/Whats-Payment.git
+$ cd Whats-Payment
 $ yarn
 $ npm start
 ```
@@ -79,10 +83,6 @@ $ npm start
 $ pkg install yarn
 $ yarn
 ```
-
-## WARNING
-* Mungkin software ini tidak akan berjalan secara optimal diwindows dan termux
-* Direkomendasikan menggunakan linux
 
 ## Thanks To
 * [`ResahDevv`](https://github.com/resahdevv)

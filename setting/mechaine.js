@@ -22,14 +22,12 @@ const md5 = require('md5');
 
 //code by rezadevv
 let money = JSON.parse(fs.readFileSync('./src/balance.json'))
+let limit = JSON.parse(fs.readFileSync('./src/limit.json'))
 let signup = JSON.parse(fs.readFileSync('./src/user.json'))
 const ban = JSON.parse(fs.readFileSync('./src/banned.json'))
 const isBanned = JSON.parse(fs.readFileSync('./src/banned.json'))
 const PathAuto = "./src/depo/"
 // end code
-
-var profit = 100; // Keuntungan
-    global.untung = `${profit}`;
 
 let ptricelist = {
   ff: {
@@ -251,32 +249,33 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       .then(({data}) => {
         if (payload.type_mess == 'buy') {
           if (data.result) {
-            moneyAdd(m.sender, data.data.price + profit)
-      messn = `*── 「 TRX PULSA SUKSES 」 ──*\n\n_📌 Harga : Rp${data.data.price + profit}_\n_📌 Nomor : ${data.data.data.includes('.') ? data.data.data.split('.')[1] : data.data.data}_\n_📌 Nama Item : ${data.data.service}_\n_📌 Trx Id : ${data.data.trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala!._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
-    let buttons = [
-    { buttonId: `${prefix}cek ${data.data.trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
-    ]
-    client.sendButtonText(from, buttons, `${messn}`,`@RezaDevv`, m)
-    fs.unlinkSync(`./src/depo/${sender}1.json`)
+            limitAdd(m.sender, limitrate)
+            moneyAdd(m.sender, data.data.price)
+            messn = `*── 「 TRX PULSA SUKSES 」 ──*\n\n_📌 Harga : Rp${data.data.price}_\n_📌 Nomor : ${data.data.data.includes('.') ? data.data.data.split('.')[1] : data.data.data}_\n_📌 Nama Item : ${data.data.service}_\n_📌 Trx Id : ${data.data.trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala!._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
+            let buttons = [
+              { buttonId: `${prefix}cek ${data.data.trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
+            ]
+            client.sendButtonText(from, buttons, `${messn}`,`@RezaDevv`, m)
+            fs.unlinkSync(`./src/depo/${sender}1.json`)
           } else {
             if (data.message == 'Saldo Anda tidak cukup untuk melakukan pemesanan ini.') {
-              reply('*_Maaf Saldo Server Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
+              m.reply('*_Maaf Saldo Server Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
               fs.unlinkSync(`./src/depo/${sender}1.json`)
             } else {
-              reply(`_pembelian gagal_\n_reason: ${data.message}_`)
+              m.reply(`_pembelian gagal_\n_reason: ${data.message}_`)
               fs.unlinkSync(`./src/depo/${sender}1.json`)
             }
           }
         } else if (payload.type_mess == 'cek') {
           if (data.result) {
             let note = data.data[0].note
-            let wosk = `*── 「 STATUS TRX KAMU 」 ──*\n\n_📌 Harga : Rp${data.data[0].price + profit}_\n_📌 Nomor : ${data.data[0].data.includes('.') ? data.data[0].data.split('.')[1] : data.data[0].data}_\n_📌 Nama Item : ${data.data[0].service}_\n_📌 Trx Id : ${data.data[0].trxid}_\n_📌 Serial : ${note.replace("Transaksi Gagal ", "Transaksi Gagal")}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala!._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner!._*`
+            let wosk = `*── 「 STATUS TRX KAMU 」 ──*\n\n_📌 Harga : Rp${data.data[0].price}_\n_📌 Nomor : ${data.data[0].data.includes('.') ? data.data[0].data.split('.')[1] : data.data[0].data}_\n_📌 Nama Item : ${data.data[0].service}_\n_📌 Trx Id : ${data.data[0].trxid}_\n_📌 Serial : ${note.replace("Transaksi Gagal ", "Transaksi Gagal")}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala!._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner!._*`
             let buttons = [
-    { buttonId: `${prefix}cek ${data.data[0].trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
-    ]
-    client.sendButtonText(from, buttons, `${wosk}`, `@RezaDevv`, m)
+              { buttonId: `${prefix}cek ${data.data[0].trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
+            ]
+            client.sendButtonText(from, buttons, `${wosk}`, `@RezaDevv`, m)
           } else {
-            reply(data.message)
+            m.reply(data.message)
           }
         }
       })
@@ -288,7 +287,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       let api_id = reseleridkey
       let sign = md5(api_id + api_key)
       
-      if (['buy','cek'].includes(data.type) == false) return reply('*_harap masukan orang yang benar_*')
+      if (['buy','cek'].includes(data.type) == false) return m.reply('*_harap masukan orang yang benar_*')
     
       let ceng = cUrl(base_url,
         'POST',
@@ -352,6 +351,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
     const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
     const isUser = signup.includes(sender)
 
+    // Start Money
     const addMonUser = (sender, amount) => {
       let position = false
       Object.keys(money).forEach((i) => {
@@ -392,7 +392,52 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
         money.push(obj)
         fs.writeFileSync('./src/balance.json', JSON.stringify(money))
       }
+    }
+    // End Money
+
+    // Start Limt Trx
+    const addLimUser = (sender, amount) => {
+      let position = false
+      Object.keys(limit).forEach((i) => {
+        if (limit[i].id === sender) {
+          position = i
+        }
+      })
+      if (position !== false) {
+        limit[position].limit += amount
+        fs.writeFileSync('./src/limit.json', JSON.stringify(limit))
       }
+    }
+    
+    const limitAdd = (sender, amount) => {
+      let position = false
+      Object.keys(limit).forEach((i) => {
+        if (limit[i].id == sender) {
+          position = i
+        }
+      })
+      if (position !== false) {
+        limit[position].limit -= amount
+        fs.writeFileSync('./src/limit.json', JSON.stringify(limit))
+      }
+    }
+    const getLimUser = (sender) => {
+        let fiendh = false
+      for (let potonlmt of limit) {
+        if (potonlmt.id === sender) {
+           global.userPoton = potonlmt.limit
+          fiendh = true
+          return global.userPoton
+        }
+      }
+      //function adven
+      if (fiendh === false) {
+        let obj = { id: sender, limit: 0 }
+        limit.push(obj)
+        fs.writeFileSync('./src/limit.json', JSON.stringify(limit))
+      }
+    }
+    // End Limit Trx
 
     // Push Message To Console
     let argsLog = budy.length > 30 ? `${q.substring(0, 30)}...` : budy;
@@ -419,55 +464,53 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
 
     if (command === 'pulsa') {
       if (!fs.existsSync(PathAuto + `${sender}1` + ".json")) {
-      var deposit_object = {
-      ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
-      session: "bilang_angkanya",
-      sender: q,
-      data: {
-      text_nya: "",
-      code: ""
-      }
+        var deposit_object = {
+          ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
+          session: "bilang_angkanya",
+          sender: q,
+          data: {text_nya: "",
+          code: ""
+        }
       }
       fs.writeFileSync(PathAuto + `${sender}1` + ".json", JSON.stringify(deposit_object, null, 2))
-      } else {
-      reply(`*_Silahkan Ketik .cancelpulsa Untuk Melakukan Pembelian Kembali_*`)
-      }
-      }
-      if (fs.existsSync(PathAuto + `${sender}1` + ".json")) {
-        let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}1` + ".json"))
-        if (!chath.startsWith(prefix) && !m.key.fromMe && sender == sndr.sender) {
-        let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}1` + ".json"))
-        if (data_deposit.session === "bilang_angkanya") {;
-        if (isNaN(chath)) return reply("*_Masukkan Nomor Tujuan_*")
+    } else {
+      m.reply(`*_Silahkan Ketik .cancelpulsa Untuk Melakukan Pembelian Kembali_*`)
+    }
+  }
+  if (fs.existsSync(PathAuto + `${sender}1` + ".json")) {
+    let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}1` + ".json"))
+    if (!chath.startsWith(prefix) && !m.key.fromMe && sender == sndr.sender) {
+      let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}1` + ".json"))
+      if (data_deposit.session === "bilang_angkanya") {;
+        if (isNaN(chath)) return m.reply("*_Masukkan Nomor Tujuan_*")
         data_deposit.data.text_nya = `${chath.replace('628','08')}`
         data_deposit.data.code = data_deposit.data.text_nya.substring(0,4)
         data_deposit.session = "text_nya_cuy";
         fs.writeFileSync(PathAuto + `${sender}1` + ".json", JSON.stringify(data_deposit, null, 3));
         nomer = data_deposit.data.text_nya
         code = data_deposit.data.code
-          const data = [
-            {'name': 'Telkomsel', 'code': ['0811', '0812', '0813', '0821', '0822', '0823', '0852', '0853'], 'list': './src/list-telkomsel.json'},
-            {'name': 'By.U', 'code': ['0851'], 'list': './src/list-bayu.json'},
-            {'name': 'Indosat', 'code': ['0814', '0815', '0816', '0855', '0856', '0857', '0858'], 'list': './src/list-indosat.json'},
-            {'name': 'XL', 'code': ['0817', '0818', '0819', '0859', '0877', '0878', '0879'], 'list': './src/list-xl.json'},
-            {'name': 'Axis', 'code': ['0831', '0832', '0833', '0838'], 'list': './src/list-axis.json'},
-            {'name': 'Smartfren', 'code': ['0881', '0882', '0883', '0887', '0888', '0889'], 'list': './src/list-smart.json'},
-            {'name': 'Tri', 'code': ['0895', '0896', '0897', '0898', '0899'], 'list': './src/list-tri.json'}
-          ]
-          let result = {name: 'unknown', file: null}
-          for (let i of data) {
-            i.code.includes(code) ? result = {name: i.name, file: i.list} : ''
+        const data = [
+          {'name': 'Telkomsel', 'code': ['0811', '0812', '0813', '0821', '0822', '0823', '0852', '0853'], 'list': './src/list-telkomsel.json'},
+          {'name': 'By.U', 'code': ['0851'], 'list': './src/list-bayu.json'},
+          {'name': 'Indosat', 'code': ['0814', '0815', '0816', '0855', '0856', '0857', '0858'], 'list': './src/list-indosat.json'},
+          {'name': 'XL', 'code': ['0817', '0818', '0819', '0859', '0877', '0878', '0879'], 'list': './src/list-xl.json'},
+          {'name': 'Axis', 'code': ['0831', '0832', '0833', '0838'], 'list': './src/list-axis.json'},
+          {'name': 'Smartfren', 'code': ['0881', '0882', '0883', '0887', '0888', '0889'], 'list': './src/list-smart.json'},
+          {'name': 'Tri', 'code': ['0895', '0896', '0897', '0898', '0899'], 'list': './src/list-tri.json'}
+        ]
+        let result = {name: 'unknown', file: null}
+        for (let i of data) {
+          i.code.includes(code) ? result = {name: i.name, file: i.list} : ''
+        }
+        if (result.name != 'unknown'){
+          let list = []
+          for (let i of JSON.parse(fs.readFileSync(result.file))) {
+            list.push({
+              title: i.name,
+              rowId: `${prefix}konfirmasipulsa ${nomer}|${i.id}|${i.price}`,
+              description: 'Rp'+i.price
+            })
           }
-          if (result.name != 'unknown'){
-            let list = []
-            for (let i of JSON.parse(fs.readFileSync(result.file))) {
-              list.push({
-                title: i.name,
-                rowId: `${prefix}konfirmasipulsa ${nomer}|${i.id}|${i.price}`,
-                description: `${formatmoney(i.price + profit)}`
-              })
-            }
-        
           let api_key = reselerkey
           let api_id = reseleridkey
           let sign = md5(api_id + api_key)
@@ -486,55 +529,54 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
             client.sendMessage(m.chat, listMessage)
             })
           } else {
-            reply('maaf provider dari nomor anda tidak terdaftar')
+            m.reply('*_Maaf Provider Dari Nomor Anda Tidak Di Temukan_*')
            fs.unlinkSync(`./src/depo/${sender}1.json`)
           }
         }
       }
-        }
+    }
     if (command === 'emoney') {
       if (!fs.existsSync(PathAuto + `${sender}2` + ".json")) {
-      var deposit_object = {
-      ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
-      session: "bilang_angkanya",
-      sender: q,
-      data: {
-      text_nya: "",
-      ref: ""
-      }
-      }
-      fs.writeFileSync(PathAuto + `${sender}2` + ".json", JSON.stringify(deposit_object, null, 2))
+        var deposit_object = {
+          ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
+          session: "bilang_angkanya",
+          sender: q,
+          data: {
+            text_nya: "",
+            ref: ""
+          }
+        }
+        fs.writeFileSync(PathAuto + `${sender}2` + ".json", JSON.stringify(deposit_object, null, 2))
       } else {
-      reply(`*_Silahkan Ketik .cancelemoney Untuk Melakukan Pembelian Kembali_*`)
+        m.reply(`*_Silahkan Ketik .cancelemoney Untuk Melakukan Pembelian Kembali_*`)
       }
-      }
-      
-      if (fs.existsSync(PathAuto + `${sender}2` + ".json")) {
+    }
+    if (fs.existsSync(PathAuto + `${sender}2` + ".json")) {
       let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}2` + ".json"))
       if (!chath.startsWith(prefix) && !m.key.fromMe && sender == sndr.sender) {
-      let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}2` + ".json"))
-      if (data_deposit.session === "bilang_angkanya") {;
-      if (isNaN(chath)) return reply("*_Masukkan Nomor Tujuan_*")
-      data_deposit.data.text_nya = `${chath.replace('628','08')}`
-      data_deposit.data.code = data_deposit.data.text_nya.substring(0,4)
-      data_deposit.session = "text_nya_cuy";
-      fs.writeFileSync(PathAuto + `${sender}2` + ".json", JSON.stringify(data_deposit, null, 3));
-      nomer = data_deposit.data.text_nya
-      code = data_deposit.data.code
-        let provv = [
-        {'id':'shopee pay','nama':'SHOPEE PAY','file':'./src/list-shopee.json'},
-        {'id':'ovo','nama':'OVO','file':'./src/list-ovo.json'},
-        {'id':'dana','nama':'DANA','file':'./src/list-dana.json'},
-        {'id':'bri brizzi','nama':'BRI BRIZZI','file':'./src/list-bri.json'},
-        {'id':'go pay','nama':'GOPAY','file':'./src/list-gpay.json'},
-        {'id':'doku','nama':'DOKU','file':'./src/list-doku.json'},
-        {'id':'linkaja','nama':'LINKAJA','file':'./src/list-linkaja.json'},
-        {'id':'grab','nama':'GRAB','file':'./src/list-grab.json'},
-        {'id':'mandiri e-toll','nama':'MANDIRI E-TOLL','file':'./src/list-mandiri.json'},
-        {'id':'tapcash bni','nama':'TAPCASH BNI','file':'./src/list-bni.json'},
-        {'id':'tix id','nama':'TIX ID','file':'./src/list-tix.json'}
-      ]
-      let list = []
+        let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}2` + ".json"))
+        if (data_deposit.session === "bilang_angkanya") {;
+          if (isNaN(chath)) return m.reply("*_Masukkan Nomor Tujuan_*")
+          data_deposit.data.text_nya = `${chath.replace('628','08')}`
+          data_deposit.data.code = data_deposit.data.text_nya.substring(0,4)
+          data_deposit.session = "text_nya_cuy";
+          fs.writeFileSync(PathAuto + `${sender}2` + ".json", JSON.stringify(data_deposit, null, 3));
+          nomer = data_deposit.data.text_nya
+          code = data_deposit.data.code
+          let provv = [
+            {'id':'shopee pay','nama':'SHOPEE PAY','file':'./src/list-shopee.json'},
+            {'id':'ovo','nama':'OVO','file':'./src/list-ovo.json'},
+            {'id':'dana','nama':'DANA','file':'./src/list-dana.json'},
+            {'id':'bri brizzi','nama':'BRI BRIZZI','file':'./src/list-bri.json'},
+            {'id':'go pay','nama':'GOPAY','file':'./src/list-gpay.json'},
+            {'id':'doku','nama':'DOKU','file':'./src/list-doku.json'},
+            {'id':'linkaja','nama':'LINKAJA','file':'./src/list-linkaja.json'},
+            {'id':'grab','nama':'GRAB','file':'./src/list-grab.json'},
+            {'id':'mandiri e-toll','nama':'MANDIRI E-TOLL','file':'./src/list-mandiri.json'},
+            {'id':'tapcash bni','nama':'TAPCASH BNI','file':'./src/list-bni.json'},
+            {'id':'tix id','nama':'TIX ID','file':'./src/list-tix.json'}
+          ]
+          let list = []
           for (let i of provv) {
             list.push({
               title: i.nama,
@@ -542,8 +584,6 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
               description: 'Available'
             })
           }
-          
-         
           const listMessage = {
             text: `*_Pilih Layanan E-Money Yang Anda Inginkan, Berikut Adalah Daftar E-Money Yang Tersedia Dalam Menu Kami!_*`,
             footer: "By @RezaDevv",
@@ -555,94 +595,200 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
             listType: 1
           }
           client.sendMessage(m.chat, listMessage)
-          
           }
         }
       }
       if (command === 'tokenpln') {
         if (!fs.existsSync(PathAuto + `${sender}3` + ".json")) {
-        var deposit_object = {
-        ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
-        session: "bilang_angkanya",
-        sender: q,
-        data: {
-        text_nya: "",
-        ref: ""
-        }
-        }
-        fs.writeFileSync(PathAuto + `${sender}3` + ".json", JSON.stringify(deposit_object, null, 2))
+          var deposit_object = {
+            ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
+            session: "bilang_angkanya",
+            sender: q,
+            data: {
+              text_nya: "",
+              ref: ""
+            }
+          }
+          fs.writeFileSync(PathAuto + `${sender}3` + ".json", JSON.stringify(deposit_object, null, 2))
         } else {
-        reply(`*_Silahkan Ketik .cancelpln Untuk Melakukan Pembelian Kembali_*`)
+          m.reply(`*_Silahkan Ketik .cancelpln Untuk Melakukan Pembelian Kembali_*`)
         }
-        }  
-        if (fs.existsSync(PathAuto + `${sender}3` + ".json")) {
+      }  
+      if (fs.existsSync(PathAuto + `${sender}3` + ".json")) {
         let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}3` + ".json"))
         if (!chath.startsWith(prefix) && !m.key.fromMe && sender == sndr.sender) {
-        let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}3` + ".json"))
-        if (data_deposit.session === "bilang_angkanya") {;
-        if (isNaN(chath)) return reply("*_Masukkan Id Pelanggan_*")
-        data_deposit.data.text_nya = `${Number(chath)}`
-        data_deposit.session = "text_nya_cuy";
-        fs.writeFileSync(PathAuto + `${sender}3` + ".json", JSON.stringify(data_deposit, null, 3));
-        let nmrs = data_deposit.data.text_nya
-        let axios = require('axios')
-        let md5 = require('md5')
-        let api_key = reselerkey
-        let api_id = reseleridkey
-        let sign = md5(api_id + api_key)
-        axios('https://vip-reseller.co.id/api/prepaid',{
-        method: 'POST',
-        data: new URLSearchParams(Object.entries({
-        key: api_key,
-        sign: sign,
-        type: 'services',
-        filter_type: 'brand',
-        filter_value: 'PLN'
-        }))}).then((res) => {
-          let result = res.data.data.sort((i,j) => {
-            return i.price.basic - j.price.basic
-          })
-        let list = []
-            for (let i of result) {
-              list.push({
-                title: i.name,
-                rowId: `${prefix}konfirmasipln ${nmrs}|${i.code}|${i.price.basic}`,
-                description: `${formatmoney(i.price.basic + 100)}`
+          let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}3` + ".json"))
+          if (data_deposit.session === "bilang_angkanya") {;
+            if (isNaN(chath)) return m.reply("*_Masukkan Id Pelanggan_*")
+            data_deposit.data.text_nya = `${Number(chath)}`
+            data_deposit.session = "text_nya_cuy";
+            fs.writeFileSync(PathAuto + `${sender}3` + ".json", JSON.stringify(data_deposit, null, 3));
+            let nmrs = data_deposit.data.text_nya
+            let axios = require('axios')
+            let md5 = require('md5')
+            let api_key = reselerkey
+            let api_id = reseleridkey
+            let sign = md5(api_id + api_key)
+            axios('https://vip-reseller.co.id/api/prepaid',{
+              method: 'POST',
+              data: new URLSearchParams(Object.entries({
+                key: api_key,
+                sign: sign,
+                type: 'services',
+                filter_type: 'brand',
+                filter_value: 'PLN'
+              }))}).then((res) => {
+                let result = res.data.data.sort((i,j) => {
+                  return i.price.basic - j.price.basic
+                })
+                let list = []
+                for (let i of result) {
+                  list.push({
+                    title: i.name,
+                    rowId: `${prefix}konfirmasipln ${nmrs}|${i.code}|${i.price.basic}`,
+                    description: `${formatmoney(i.price.basic + 100)}`
+                  })
+                }
+                let api_key = reselerkey
+                let api_id = reseleridkey
+                let sign = md5(api_id + api_key)
+                axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: api_key,sign: sign}))}).then((res) => {
+                  const listMessage = {
+                    text: `*_Pilih layanan sesuai dengan yang anda inginkan, Berikut adalah list yang bisa anda pilih, silahkan!_*\n\n_Server Balance: ${formatmoney(res.data.data.balance)}_\n_Your Balance: ${formatmoney(getMonUser(sender))}_\n\nNote: *_Jika Saldo Server Kurang Dari Harga Pembelian Yang Anda Inginkan Silahkan Tunggu Jam Reset Saldo Server Pada 12.00/18.00 Terimakasih Telah Memilih Kami_*`,
+                    footer: "©Whats Payment",
+                    buttonText: "Select One Option",
+                    sections: [{
+                      title: "Token Pln Fast",
+                      rows: list
+                    }],
+                    listType: 1
+                  }
+                  client.sendMessage(m.chat, listMessage)
+                })
               })
             }
-            
-          let api_key = reselerkey
-          let api_id = reseleridkey
-          let sign = md5(api_id + api_key)
-          axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: api_key,sign: sign}))}).then((res) => {
-            const listMessage = {
-              text: `*_Pilih layanan sesuai dengan yang anda inginkan, Berikut adalah list yang bisa anda pilih, silahkan!_*\n\n_Server Balance: ${formatmoney(res.data.data.balance)}_\n_Your Balance: ${formatmoney(getMonUser(sender))}_\n\nNote: *_Jika Saldo Server Kurang Dari Harga Pembelian Yang Anda Inginkan Silahkan Tunggu Jam Reset Saldo Server Pada 12.00/18.00 Terimakasih Telah Memilih Kami_*`,
-              footer: "©Whats Payment",
-              buttonText: "Select One Option",
-              sections: [{
-                title: "Token Pln Fast",
-                rows: list
-              }],
-              listType: 1
-            }
-            
-            client.sendMessage(m.chat, listMessage)
-        })
-            })
+          }
+        }
+    if (command === 'gamesorder') {
+      nomr = text.split("|")[0]
+      idnye = text.split("|")[1]
+      if (!fs.existsSync(PathAuto + `${sender}6` + ".json")) {
+        var deposit_object = {
+          ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
+          session: "ytmp4",
+          sender: nomr,
+          data: {
+            game_nya: idnye,
+            url_nya: "",
+            url_nye: ""
+          }
+        }
+        fs.writeFileSync(PathAuto + `${sender}6` + ".json", JSON.stringify(deposit_object, null, 2))
+      } else {
+        m.reply(`*_Silahkan Ketik .cancelgame Untuk Melakukan Pembelian Kembali_*`)
+      }
+    }
+    if (fs.existsSync(PathAuto + `${sender}6` + ".json")) {
+      let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}6` + ".json"))
+      if (!chath.startsWith(prefix) && !m.key.fromMe && sender == sndr.sender) {
+        let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}6` + ".json"))
+        if (data_deposit.session === "ytmp4") {
+          if (isNaN(chath)) return m.reply("*_Masukkan Id Game (Only Id)_*")
+          data_deposit.data.url_nya = (chath)
+          data_deposit.session = "input_urlytmp4";
+          fs.writeFileSync(PathAuto + `${sender}6` + ".json", JSON.stringify(data_deposit, null, 3));
+          ininih = data_deposit.data.url_nya
+          gamenya = data_deposit.data.game_nya
+          messn = `*_Apakah Game Anda Menggunakan Zone?_*`
+          let buttons = [
+            { buttonId:`inputzone ${ininih}|${gamenya}|${sender}`, buttonText: { displayText: 'Input Zone' }, type: 1 },
+            { buttonId:`${prefix}onlyid ${ininih}|${gamenya}`, buttonText: { displayText: 'Hanya Id' }, type: 1 }
+          ]
+          client.sendButtonText(from, buttons, `${messn}`, `${packname}`, m)
         }
       }
     }
+    if (command === 'inputzone') {
+      nijg = text.split("|")[0]
+      ygtdi = text.split("|")[1]
+      nw = text.split("|")[2]
+      if (!fs.existsSync(PathAuto + `${sender}7` + ".json")) {
+        var deposit_object = {
+          ID: require("crypto").randomBytes(5).toString("hex").toUpperCase(),
+          session: "ytmp4",
+          sender: nw,
+          data:{
+            game_nya: ygtdi,
+            url_nya: nijg,
+            url_nye: ""
+          }
+        }
+        fs.writeFileSync(PathAuto + `${sender}7` + ".json", JSON.stringify(deposit_object, null, 2))
+      } else {
+        m.reply(`*_Silahkan Ketik .cancelgame Untuk Melakukan Pembelian Kembali_*`)
+      }
+    }
+    if (fs.existsSync(PathAuto + `${sender}7` + ".json")) {
+      let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}7` + ".json"))
+      if (!chath.startsWith(prefix) && !m.key.fromMe && sender == sndr.sender) {
+        let data_deposit = JSON.parse(fs.readFileSync(PathAuto + `${sender}6` + ".json"))
+        if (data_deposit.session === "input_urlytmp4") {
+          if (isNaN(chath)) return m.reply("*_Masukkan Zone Id_*")
+          data_deposit.data.url_nye = (chath)
+          data_deposit.session = "ytmp4";
+          fs.writeFileSync(PathAuto + `${sender}7` + ".json", JSON.stringify(data_deposit, null, 3));
+          ininih = data_deposit.data.url_nya
+          inunih = data_deposit.data.url_nye
+          ininuh = data_deposit.data.game_nya
+          nomr = text.split("|")[0]
+          idnye = text.split("|")[1]
+          let api_key = atlantickey
+          let axios = require('axios')
+          axios('https://atlantic-pedia.co.id/api/pulsa',{
+            method: 'POST',
+            data: new URLSearchParams(Object.entries({
+              key: api_key,
+              action: 'services',
+            }))}).then((res) => {
+              let result = res.data.data.sort((i,j) => {
+                return i.price.basic - j.price.basic
+              })
+              let list = []
+              for (let i of result) {
+                if(i.category == ininuh){
+                  list.push({
+                    title: i.name,
+                    rowId: `${prefix}konfirmasigame ${ininih}${inunih}|${i.code}|${i.price}|${i.name}`,
+                    description: 'Rp'+i.price
+                  })
+                }
+              }
+              const listMessage = {
+                text: `*_Berikut Adalah List Diamond ${ininuh} Yang Tersedia, Silahkan Pilih Salah Satu Yang Anda Ingin Beli._*`,
+                footer: "©RezaDevv (Owner)",
+                buttonText: "Select Option",
+                sections: [{
+                  title: "Whats Payment",
+                  rows: list
+                }],
+                listType: 1
+              }
+              client.sendMessage(m.chat, listMessage)
+            })
+          }
+        }
+      }
     
     if (isCmd2) {
       switch (command) {
         case "help": case "menu":
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}topup\n📍 ${prefix}depomanual\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${moment.tz('Asia/Jakarta').format('DD/MM/YY')}_*\n*_🕒 Waktu Server : ${moment.tz('Asia/Jakarta').format('HH:mm:ss')}_*`
+            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
             client.sendText(m.chat, anu, m)   
         break;
         case "ownermenu" :
-        if (!isCreator) throw mes.owner
-        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}updatelayanan\n📍 ${prefix}creditreseller\n📍 ${prefix}creditdigiflazz\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
+        if (!isCreator) throw mess.owner
+        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}updatelayanan\n📍 ${prefix}creditatlantic\n📍 ${prefix}creditreseller\n📍 ${prefix}creditdigiflazz\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
         client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
@@ -773,196 +919,455 @@ list = []
     
     client.sendMessage(m.chat, listMessage)
     }
-// Start Cancel group
-break;
-case "cancelpulsa" :
-if(!fs.existsSync(`./src/depo/${sender}1.json`)) return reply('*_Silahkan Lakukan Pembelian Pulsa Terlebih Dahulu_*')
-fs.unlinkSync(`./src/depo/${sender}1.json`)
-reply('*_Sukses Cancel Pulsa_*')
-break;
-case "cancelpln" :
-if(!fs.existsSync(`./src/depo/${sender}3.json`)) return reply('*_Anda Tidak Melakukan Transaksi Token Pln_*')
-fs.unlinkSync(`./src/depo/${sender}3.json`)
-reply('*_Sukses Cancel Pln_*')
-break;
-case "cancelemoney" :
-if(!fs.existsSync(`./src/depo/${sender}2.json`)) return reply('*_Anda Tidak Melakukan Transaksi E-Money')
-fs.unlinkSync(`./src/depo/${sender}2.json`)
-reply('*_Sukses Cancel Emoney_*')
-break;
-// End Cancel group
-// Start Konfirmasi group
-case "konfirmasipulsa" : {
-  if (isBanned) return m.reply(`*You Have Been Banned*`)
-if(!fs.existsSync(`./src/depo/${sender}1.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian Pulsa Kembali_*')
-let hrg = text.split("|")[2]
-if (getMonUser(sender) < hrg) {
- reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
- fs.unlinkSync(`./src/depo/${sender}1.json`)
- }
-if (getMonUser(sender) > hrg) {
-let nomr = text.split("|")[0]
-let idn = text.split("|")[1]
-let nmorr = nomr.includes('.') ? nomr.split('.')[1] : nomr
-pulsabuy({
-    type: 'buy',
-    id_service: idn,
-    target: nmorr
-  })
-  }
-}
-break;
-case "konfirmasipln" : {
-if (isBanned) return m.reply(`*You Have Been Banned*`)
-if(!fs.existsSync(`./src/depo/${sender}3.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian Token Listrik Kembali_*')
-let hrg = text.split("|")[2]
-if (getMonUser(sender) < hrg) {
- reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
- fs.unlinkSync(`./src/depo/${sender}3.json`)
- }
- if (getMonUser(sender) > hrg) {
-let nomr = text.split("|")[0]
-let idn = text.split("|")[1]
-let axios = require('axios')
-let md5 = require('md5')
-let api_key = reselerkey
-  let api_id = reseleridkey
-let sign = md5(api_id + api_key)
-axios('https://vip-reseller.co.id/api/prepaid',{
-method: 'POST',
-data: new URLSearchParams(Object.entries({
-key: api_key,
-sign: sign,
-type: 'order',
-service: idn,
-data_no: nomr
-}))}).then((res) => {
-if (res.data.message == 'Saldo Anda tidak cukup untuk melakukan pemesanan ini.') {
-  reply('*_Maaf Saldo Server Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
-  fs.unlinkSync(`./src/depo/${sender}3.json`)
-  }
-if (res.data.message == 'Pesanan berhasil, pesanan akan diproses.') {
-  let liatharga = res.data.data.price + profit
-  let nomor = res.data.data.data
-  let trxid = res.data.data.trxid
-  let namaitem = res.data.data.service
-	moneyAdd(m.sender, liatharga)
-	messn = `*── 「 TRX TOKEN SUKSES 」 ──*\n\n_📌 Harga : Rp${liatharga}_\n_📌 Nomor : ${nomor}_\n_📌 Nama Item : ${namaitem}_\n_📌 Trx Id : ${trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala!._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
-let buttons = [
-{ buttonId: prefix+`cek ${trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
-]
-client.sendButtonText(from, buttons, `${messn}`, `@RezaDevv`, m)
-fs.unlinkSync(`./src/depo/${sender}3.json`)
-}
-})
-}
-}
-break;
-case "konfirmasiemoney" : {
-if(!fs.existsSync(`./src/depo/${sender}2.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
-let nomr = text.split("|")[0]
-let idn = text.split("|")[1]
- let axios = require('axios')
-let md5 = require('md5')
-let api_key = reselerkey
-let api_id = reseleridkey
-let sign = md5(api_id + api_key)
-axios('https://vip-reseller.co.id/api/prepaid',{
-method: 'POST',
-data: new URLSearchParams(Object.entries({
-key: api_key,
-sign: sign,
-type: 'services',
-filter_type: 'brand',
-filter_value: idn
-}))}).then((res) => {
-  let result = res.data.data.sort((i,j) => {
-    return i.price.basic - j.price.basic
-  })
-let list = []
-    for (let i of result) {
+    break;
+    case "listgame" : {
+      let provv  = [ {'id':'Arena Of Valor'},
+      {'id':'AU2 Mobile'},
+      {'id':'Boyaa Capsa Susun'},
+      {'id':'Boyaa Domino Qiuqiu'},
+      {'id':'Call Of Duty'},
+      {'id':'Dragon Raja SEA'},
+      {'id':'Free Fire Membership MURAH !'},
+      {'id':'Free Fire MURAH !'},
+      {'id':'Free Fire PROMO MURAH !'},
+      {'id':'Garena Shell BACKUP'},
+      {'id':'Garena Shell MURAH'},
+      {'id':'Genshin Impact'},
+      {'id':'HAGO'},
+      {'id':'Higgs Domino'},
+      {'id':'IndoPlay Mango'},
+      {'id':'Leplace M'},
+      {'id':'LifeAfter Credits'},
+      {'id':'Lords Mobile'},
+      {'id':'Mobile Legends'},
+      {'id':'Mobile Legends MURAH!!!'},
+      {'id':'Point Blank'},
+      {'id':'Point Blank Cash MURAH'},
+      {'id':'PUBG Mobile'},
+      {'id':'Ride Out Heroes'},
+      {'id':'Sausage Man'},
+      {'id':'Smile One Coin'},
+      {'id':'Speed Drifters'},
+      {'id':'Starpass'},
+      {'id':'Tom And Jerry Chase Diamond'},
+      {'id':'Valorant'}
+    ]
+    let list = []
+    for (let i of provv) {
       list.push({
-        title: i.name,
-        rowId: `${prefix}konfirmasiemoneyfix ${nomr}|${i.code}|${i.price.basic}`,
-        description: `${formatmoney(i.price.basic + 100)} - ${i.status}`
+        title: i.id,
+        rowId: `gamesorder ${sender}|${i.id}`,
+        description: 'Available'
       })
     }
-  let api_key = reselerkey
-  let api_id = reseleridkey
-  let sign = md5(api_id + api_key)
-  axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: api_key,sign: sign}))}).then((res) => {
     const listMessage = {
-      text: `*_Pilih layanan sesuai dengan yang anda inginkan, Berikut adalah list yang bisa anda pilih, silahkan!_*\n\n_Server Balance: ${formatmoney(res.data.data.balance)}_\n_You Balance: ${formatmoney(getMonUser(sender))}_\n\nNote: *_Jika Saldo Server Kurang Dari Harga Pembelian Yang Anda Inginkan Silahkan Tunggu Jam Reset Saldo Server Pada 12.00/18.00! Terimakasih Telah Memilih Kami_.*`,
-      footer: "By @RezaDevv",
-      buttonText: "Select One Option",
+      text: `*_Pilih Layanan Voucher Game Yang Anda Inginkan, Berikut Adalah Daftar Game Yang Tersedia Dalam Menu Kami!_*`,
+      footer: "©RezaDevv (Owner)",
+      buttonText: "Select One Click",
       sections: [{
         title: "Whats Payment",
         rows: list
       }],
       listType: 1
     }
-    
     client.sendMessage(m.chat, listMessage)
+  }
+// Start Cancel group
+break;
+case "cancelpulsa" :
+  if(!fs.existsSync(`./src/depo/${sender}1.json`)) return m.reply('*_Silahkan Lakukan Pembelian Pulsa Terlebih Dahulu_*')
+  fs.unlinkSync(`./src/depo/${sender}1.json`)
+  m.reply('*_Sukses Cancel Pulsa_*')
+  break;
+  case "cancelpln" :
+    if(!fs.existsSync(`./src/depo/${sender}3.json`)) return m.reply('*_Anda Tidak Melakukan Transaksi Token Pln_*')
+    fs.unlinkSync(`./src/depo/${sender}3.json`)
+    m.reply('*_Sukses Cancel Pln_*')
+    break;
+    case "cancelemoney" :
+      if(!fs.existsSync(`./src/depo/${sender}2.json`)) return m.reply('*_Anda Tidak Melakukan Transaksi E-Money_*')
+      fs.unlinkSync(`./src/depo/${sender}2.json`)
+      m.reply('*_Sukses Cancel Emoney_*')
+      break;
+      case "cancelgame" :
+        if(!fs.existsSync(`./src/depo/${sender}6.json`)) return m.reply('*_Anda Tidak Melakukan Transaksi Game_*')
+        if(fs.existsSync(`./src/depo/${sender}6.json`)) {
+          let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}6` + ".json"))
+          if(sender == sndr.sender){
+            fs.unlinkSync(`./src/depo/${sender}6.json`)
+          }
+        }
+        if(fs.existsSync(`./src/depo/${sender}7.json`)) {
+          let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}7` + ".json"))
+          if(sender == sndr.sender){
+            fs.unlinkSync(`./src/depo/${sender}7.json`)
+          }
+        }
+        m.reply('*_Sukses Membatalkan_*')
+break;
+// End Cancel group
+// Start Hanya Id
+case "onlyid" : {
+  if(!fs.existsSync(`./src/depo/${sender}6.json`)) return m.reply('*_Expired/Not Found: Silahkan Lakukan Pembelian Kembali_*')
+  let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}6` + ".json"))
+  if(sender == sndr.sender){
+    ininih = text.split("|")[0]
+    ininuh = text.split("|")[1]
+    let axios = require('axios')
+    let api_key = atlantickey
+    axios('https://atlantic-pedia.co.id/api/pulsa',{
+      method: 'POST',
+      data: new URLSearchParams(Object.entries({
+        key: api_key,
+        action: 'services',
+      }))}).then((res) => {
+        let result = res.data.data.sort((i,j) => {
+          return i.price.basic - j.price.basic
+        })
+        let list = []
+        for (let i of result) {
+          if(i.category == ininuh){
+            list.push({
+              title: i.name,
+              rowId: `${prefix}konfirmasiidonly ${ininih}|${i.code}|${i.price}|${i.name}`,
+              description: 'Rp'+i.price
+            })
+          }
+        }
+        const listMessage = {
+          text: `*_Berikut Adalah List Diamond ${ininuh} Yang Tersedia, Silahkan Pilih Salah Satu Yang Anda Ingin Beli._*`,
+          footer: "©RezaDevv (Owner)",
+          buttonText: "Select One Option",
+          sections: [{
+            title: "Whats Payment",
+            rows: list
+          }],
+          listType: 1
+        }
+        client.sendMessage(m.chat, listMessage)
+      })
+    }
+  }
+break;
+// Start Konfirmasi group
+case "konfirmasipulsa" : {
+  if (isBanned) return m.reply(`*You Have Been Banned*`)
+  if(!fs.existsSync(`./src/depo/${sender}1.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian Pulsa Kembali_*')
+  let hrg = text.split("|")[2]
+  if (getLimUser(sender) < limitrate) {
+    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    fs.unlinkSync(`./src/depo/${sender}1.json`)
+  }
+  if (getMonUser(sender) < hrg) {
+    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    fs.unlinkSync(`./src/depo/${sender}1.json`)
+  }
+  if (getLimUser(sender) > limitrate) {
+  if (getMonUser(sender) > hrg) {
+    let nomr = text.split("|")[0]
+    let idn = text.split("|")[1]
+    let nmorr = nomr.includes('.') ? nomr.split('.')[1] : nomr
+    pulsabuy({
+      type: 'buy',
+      id_service: idn,
+      target: nmorr
     })
-})
+  }
 }
+  }
+break;
+case "konfirmasipln" : {
+  if (isBanned) return m.reply(`*You Have Been Banned*`)
+  if(!fs.existsSync(`./src/depo/${sender}3.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian Token Listrik Kembali_*')
+  let hrg = text.split("|")[2]
+  if (getLimUser(sender) < limitrate) {
+    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    fs.unlinkSync(`./src/depo/${sender}3.json`)
+  }
+  if (getMonUser(sender) < hrg) {
+    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    fs.unlinkSync(`./src/depo/${sender}3.json`)
+  }
+  if (getLimUser(sender) > limitrate) {
+  if (getMonUser(sender) > hrg) {
+    let nomr = text.split("|")[0]
+    let idn = text.split("|")[1]
+    let axios = require('axios')
+    let md5 = require('md5')
+    let api_key = reselerkey
+    let api_id = reseleridkey
+    let sign = md5(api_id + api_key)
+    axios('https://vip-reseller.co.id/api/prepaid',{
+      method: 'POST',
+      data: new URLSearchParams(Object.entries({
+        key: api_key,
+        sign: sign,
+        type: 'order',
+        service: idn,
+        data_no: nomr
+      }))}).then((res) => {
+        if (res.data.message == 'Saldo Anda tidak cukup untuk melakukan pemesanan ini.') {
+          m.reply('*_Maaf Saldo Server Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
+          fs.unlinkSync(`./src/depo/${sender}3.json`)
+        }
+        if (res.data.message == 'Pesanan berhasil, pesanan akan diproses.') {
+          let liatharga = res.data.data.price
+          let nomor = res.data.data.data
+          let trxid = res.data.data.trxid
+          let namaitem = res.data.data.service
+          limitAdd(m.sender, limitrate)
+          moneyAdd(m.sender, liatharga)
+          messn = `*── 「 TRX TOKEN SUKSES 」 ──*\n\n_📌 Harga : Rp${liatharga}_\n_📌 Nomor : ${nomor}_\n_📌 Nama Item : ${namaitem}_\n_📌 Trx Id : ${trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala!._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
+          let buttons = [
+            { buttonId: prefix+`cek ${trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
+          ]
+          client.sendButtonText(from, buttons, `${messn}`, `@RezaDevv`, m)
+          fs.unlinkSync(`./src/depo/${sender}3.json`)
+        }
+    })
+  }
+}
+  }
+break;
+case "konfirmasiemoney" : {
+  if(!fs.existsSync(`./src/depo/${sender}2.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
+  let nomr = text.split("|")[0]
+  let idn = text.split("|")[1]
+  let axios = require('axios')
+  let md5 = require('md5')
+  let api_key = reselerkey
+  let api_id = reseleridkey
+  let sign = md5(api_id + api_key)
+  axios('https://vip-reseller.co.id/api/prepaid',{
+    method: 'POST',
+    data: new URLSearchParams(Object.entries({
+      key: api_key,
+      sign: sign,
+      type: 'services',
+      filter_type: 'brand',
+      filter_value: idn
+    }))}).then((res) => {
+      let result = res.data.data.sort((i,j) => {
+        return i.price.basic - j.price.basic
+      })
+      let list = []
+      for (let i of result) {
+        list.push({
+          title: i.name,
+          rowId: `${prefix}konfirmasiemoneyfix ${nomr}|${i.code}|${i.price.basic}`,
+          description: `${formatmoney(i.price.basic + 100)} - ${i.status}`
+        })
+      }
+      let api_key = reselerkey
+      let api_id = reseleridkey
+      let sign = md5(api_id + api_key)
+      axios('https://vip-reseller.co.id/api/profile',{method: 'POST',data: new URLSearchParams(Object.entries({key: api_key,sign: sign}))}).then((res) => {
+        const listMessage = {
+          text: `*_Pilih layanan sesuai dengan yang anda inginkan, Berikut adalah list yang bisa anda pilih, silahkan!_*\n\n_Server Balance: ${formatmoney(res.data.data.balance)}_\n_You Balance: ${formatmoney(getMonUser(sender))}_\n\nNote: *_Jika Saldo Server Kurang Dari Harga Pembelian Yang Anda Inginkan Silahkan Tunggu Jam Reset Saldo Server Pada 12.00/18.00! Terimakasih Telah Memilih Kami_.*`,
+          footer: "By @RezaDevv",
+          buttonText: "Select One Option",
+          sections: [{
+            title: "Whats Payment",
+            rows: list
+          }],
+          listType: 1
+        }
+        client.sendMessage(m.chat, listMessage)
+      })
+    })
+  }
 break;
 case "konfirmasiemoneyfix" : {
-if (isBanned) return m.reply(`*You Have Been Banned*`)
-if(!fs.existsSync(`./src/depo/${sender}2.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
-let hrg = text.split("|")[2]
-if (getMonUser(sender) < hrg) {
- reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
- fs.unlinkSync(`./src/depo/${sender}2.json`)
- }
- if (getMonUser(sender) > hrg) {
-let nomr = text.split("|")[0]
-let idn = text.split("|")[1]
-let axios = require('axios')
-let md5 = require('md5')
-let api_key = reselerkey
-let api_id = reseleridkey
-let sign = md5(api_id + api_key)
-axios('https://vip-reseller.co.id/api/prepaid',{
-method: 'POST',
-data: new URLSearchParams(Object.entries({
-key: api_key,
-sign: sign,
-type: 'order',
-service: idn,
-data_no: nomr
-}))}).then((res) => {
-if (res.data.message == 'Saldo Anda tidak cukup untuk melakukan pemesanan ini.') {
-  reply('*_Maaf Saldo Server Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
-  fs.unlinkSync(`./src/depo/${sender}2.json`)
+  if (isBanned) return m.reply(`*You Have Been Banned*`)
+  if(!fs.existsSync(`./src/depo/${sender}2.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
+  let hrg = text.split("|")[2]
+  if (getLimUser(sender) < limitrate) {
+    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    fs.unlinkSync(`./src/depo/${sender}2.json`)
   }
-if (res.data.message == 'Pesanan berhasil, pesanan akan diproses.') {
-  let liatharga = res.data.data.price + profit
-  let nomor = res.data.data.data
-  let trxid = res.data.data.trxid
-  let namaitem = res.data.data.service
-	moneyAdd(m.sender, liatharga)
-	messn = `*── 「 TRX E-MONEY SUKSES 」 ──*\n\n_🔥 Harga : Rp${liatharga}_\n_🔥 Nomor : ${nomor}_\n_🔥 Nama Item : ${namaitem}_\n_🔥 Trx Id : ${trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
-let buttons = [
-{ buttonId: prefix+`cek ${trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
-]
-client.sendButtonText(from, buttons, `${messn}`, `@RezaDevv`, m)
-fs.unlinkSync(`./src/depo/${sender}2.json`)
+  if (getMonUser(sender) < hrg) {
+    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    fs.unlinkSync(`./src/depo/${sender}2.json`)
+  }
+  if (getLimUser(sender) > limitrate) {
+  if (getMonUser(sender) > hrg) {
+    let nomr = text.split("|")[0]
+    let idn = text.split("|")[1]
+    let axios = require('axios')
+    let md5 = require('md5')
+    let api_key = reselerkey
+    let api_id = reseleridkey
+    let sign = md5(api_id + api_key)
+    axios('https://vip-reseller.co.id/api/prepaid',{
+      method: 'POST',
+      data: new URLSearchParams(Object.entries({
+        key: api_key,
+        sign: sign,
+        type: 'order',
+        service: idn,
+        data_no: nomr
+      }))}).then((res) => {
+        if (res.data.message == 'Saldo Anda tidak cukup untuk melakukan pemesanan ini.') {
+          m.reply('*_Maaf Saldo Server Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
+          fs.unlinkSync(`./src/depo/${sender}2.json`)
+        }
+        if (res.data.message == 'Pesanan berhasil, pesanan akan diproses.') {
+          let liatharga = res.data.data.price
+          let nomor = res.data.data.data
+          let trxid = res.data.data.trxid
+          let namaitem = res.data.data.service
+          limitAdd(m.sender, limitrate)
+          moneyAdd(m.sender, liatharga)
+          messn = `*── 「 TRX E-MONEY SUKSES 」 ──*\n\n_🔥 Harga : Rp${liatharga}_\n_🔥 Nomor : ${nomor}_\n_🔥 Nama Item : ${namaitem}_\n_🔥 Trx Id : ${trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala._*\n\nNote: *_Jika Ada Kesalahan Nomor Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
+          let buttons = [
+            { buttonId: prefix+`cek ${trxid}`, buttonText: { displayText: 'Cek Trx' }, type: 1 },
+          ]
+          client.sendButtonText(from, buttons, `${messn}`, `@RezaDevv`, m)
+          fs.unlinkSync(`./src/depo/${sender}2.json`)
+        }
+      })
+    }
+  }
 }
-})
+break;
+case "konfirmasigame" : {
+  let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}7` + ".json"))
+  if(sender == sndr.sender){
+  fs.unlinkSync(`./src/depo/${sender}6.json`)
+  nomr = text.split("|")[0]
+  idnye = text.split("|")[1]
+  hrge = text.split("|")[2]
+  if(!fs.existsSync(`./src/depo/${sender}7.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
+  let hrg = text.split("|")[2]
+  if (getLimUser(sender) < limitrate) {
+    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    fs.unlinkSync(`./src/depo/${sender}7.json`)
+  }
+  if (getMonUser(sender) < hrg) {
+    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    fs.unlinkSync(`./src/depo/${sender}7.json`)
+  }
+  if (getLimUser(sender) > limitrate) {
+  if (getMonUser(sender) > hrg) {
+    let api_key = atlantickey
+    let axios = require('axios')
+    axios('https://atlantic-pedia.co.id/api/pulsa',{
+      method: 'POST',
+      data: new URLSearchParams(Object.entries({
+        key: api_key,
+        action: 'order',
+        service: idnye,
+        target: nomr,
+      }))}).then((res) => {
+        if (res.data.data == 'Saldo Anda tidak cukup untuk melakukan pembelian ini.') {
+          m.reply('*_Maaf Saldo Server Bot Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
+          fs.unlinkSync(`./src/depo/${sender}7.json`)
+        }
+        if (res.data.data.message == 'pesanan dalam proses') {
+          limitAdd(m.sender, limitrate)
+          moneyAdd(m.sender, hrge)
+          messn = `*── 「 PEMBELIAN GAME SUKSES 」 ──*\n\n_📌 Harga : Rp${text.split("|")[2]}_\n_📌 Id/Zone : ${nomr}_\n_📌 Nama Item : ${text.split("|")[3]}_\n_📌 Trx Id : ${res.data.data.trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala._*\n\nNote: *_Jika Ada Kesalahan Id/Zone Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
+          let buttons = [
+            { buttonId: prefix+`cekatlantic ${res.data.data.trxid}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+          ]
+          client.sendButtonText(from, buttons, `${messn}`, `${packname}`, m)
+          fs.unlinkSync(`./src/depo/${sender}7.json`)
+        }
+      })
+    }
+  }
 }
+  }
+break;
+case "konfirmasiidonly" : {
+  nomr = text.split("|")[0]
+  idnye = text.split("|")[1]
+  hrge = text.split("|")[2]
+  if(!fs.existsSync(`./src/depo/${sender}6.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian Games Kembali_*')
+  let sndr = JSON.parse(fs.readFileSync(PathAuto + `${sender}6` + ".json"))
+  if(sender == sndr.sender){
+    let hrg = text.split("|")[2]
+    if (getLimUser(sender) < limitrate) {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+      fs.unlinkSync(`./src/depo/${sender}6.json`)
+    }
+    if (getMonUser(sender) < hrg) {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+      fs.unlinkSync(`./src/depo/${sender}6.json`)
+    }
+    if (getLimUser(sender) > limitrate) {
+    if (getMonUser(sender) > hrg) {
+      let api_key = atlantickey
+      let axios = require('axios')
+      axios('https://atlantic-pedia.co.id/api/pulsa',{
+        method: 'POST',
+        data: new URLSearchParams(Object.entries({
+          key: api_key,
+          action: 'order',
+          service: idnye,
+          target: nomr,
+        }))}).then((res) => {
+          if (res.data.data == 'Saldo Anda tidak cukup untuk melakukan pembelian ini.') {
+            m.reply('*_Maaf Saldo Whats Payment Belum Terisi, Silahkan Tunggu Jam Reset Saldo Server Mulai 12.00/18.00_*')
+            fs.unlinkSync(`./src/depo/${sender}6.json`)
+          }
+          if (res.data.data.message == 'pesanan dalam proses') {
+            limitAdd(m.sender, limitrate)
+            moneyAdd(m.sender, hrge)
+            messn = `*── 「 PEMBELIAN GAME SUKSES 」 ──*\n\n_📌Harga : Rp${text.split("|")[2]}_\n_📌 Id/Zone : ${nomr}_\n_📌 Nama Item : ${text.split("|")[3]}_\n_📌Trx Id : ${res.data.data.trxid}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala._*\n\nNote: *_Jika Ada Kesalahan Id/Zone Bukan Tanggung Jawab Owner Dan Silahkan Tunggu 5 Menit Untuk Melakukan Transaksi Selanjutnya!.._*`
+            let buttons = [
+              { buttonId: prefix+`cekatlantic ${res.data.data.trxid}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+            ]
+            client.sendButtonText(from, buttons, `${messn}`, `${packname}`, m)
+            fs.unlinkSync(`./src/depo/${sender}6.json`)
+          }
+        })
+      }
+    }
+  }
 }
 break;
 // End Group Konfirmasi
+case "cekatlantic" : {
+  let axios = require('axios')
+  axios('https://atlantic-pedia.co.id/api/pulsa',{
+    method: 'POST',
+    data: new URLSearchParams(Object.entries({
+      key: atlantickey,
+      action: 'status',
+      trxid: text,
+    }))}).then((res) => {
+        if (res.data.result == false) {
+          m.reply(`*_${res.data.data}_*`)// Biar tau apa yang salah cuyyy
+        }
+        if (res.data.result == true) {
+          let anjay = `*── 「 STATUS TRX KAMU 」 ──*\n\n_📌 Status : ${res.data.data.status}_\n_📌 Trx Id : ${res.data.data.trxid}_\n_📌 Serial : ${res.data.data.message}_\n\n*_Produk Akan Masuk Secara Otomatis Mohon Tunggu 3-5 Menit Atau Cek Secara Berkala_*\n\nNote : *_Kesalahan Input Target Atau Id Bukan Tanggun Jawab Owner Terimakasih_*`
+          let buttons = [
+            { buttonId: prefix+`cekatlantic ${res.data.data.trxid}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+          ]
+          client.sendButtonText(from, buttons, `${anjay}`, `${packname}`, m)
+        }
+      })
+    }
+break;
+case "listuser" :
+  if (!isCreator) throw mess.owner
+  teks = '*_List User :)_*\n\n'
+  for (let pengguna of signup) {
+    teks += `- ${pengguna}\n`
+  }
+  teks += `\n*_Total User : ${signup.length}_*`
+  client.sendMessage(m.chat, { text: teks.trim() }, 'extendedTextMessage', { quoted: m, contextInfo: { "mentionedJid": signup } })
+break;
 case "cek" : {
-pulsabuy({
-  type: 'cek',
-  trxid: q
-})
+  pulsabuy({
+    type: 'cek',
+    trxid: q
+  })
 }
 break;
 case "updatelayanan" : {
-  if (!isCreator) throw mes.owner
+  if (!isCreator) throw mess.owner
   let prov = [
     {'id':'telkomsel','file':'./src/list-telkomsel.json'},
     {'id':'by.u','file':'./src/list-bayu.json'},
@@ -977,21 +1382,44 @@ case "updatelayanan" : {
       fs.unlinkSync(i.file)
     }
     updatepl(i)
-    reply(`*_update layanan sukses ${i.id}_*`)
+    m.reply(`*_update layanan sukses ${i.id}_*`)
   }
 }
     break;
-    case "depomanual"  :
+    case "caradepo"  :
       if (isBanned) return m.reply(`*You Have Been Banned*`)
-      let ezaaja = `*─ 「 CARA DEPOSIT MANUAL」 ─*\n*_Berikut Adalah Cara Deposit Manual User!._*\n\n_For Your Information, Whats Payment Hanya Mendukung Deposit Melalui Ovo, Shopeepay, Dana, Qris Saja._\n\n_💸 Ovo : 085742632270_\n_💸 Shopeepay : 085742632270_\n_💸 Dana : 085742632270_\n_💸 Qris : wa.me/+6285742632270_\n\n*_Jika Sudah Melakukan Transfer Harap Kirim Bukti Dengan Cara Mengirim Screenshot Dengan Caption, Contoh:_*\n\n${prefix}bukti JUMLAH|CATATAN\n\n_Contoh:_\n${prefix}bukti 10000|Cepet Yaa 6285737134572\n\n*_Saldo Akan Masuk Ketika Owner Mengklik Tombol Setuju Yang Dikirim Bot!._*`
-      reply(ezaaja)
+      let ezaaja = `*─ 「 CARA DEPOSIT MANUAL」 ─*\n*_Berikut Adalah Cara Deposit Manual User!._*\n\n_For Your Information, Whats Payment Hanya Mendukung Deposit Melalui Ovo, Shopeepay, Dana, Qris Saja._\n\n_💸 Ovo : 085742632270_\n_💸 Shopeepay : 085742632270_\n_💸 Dana : 085742632270_\n_💸 Qris : wa.me/+6285742632270_\n\n*_Jika Sudah Melakukan Transfer Harap Kirim Bukti Dengan Cara Mengirim Screenshot Dengan Caption, Contoh :_*\n\n${prefix}bukti JUMLAH|CATATAN\n\n_Contoh :_\n${prefix}bukti 10000|Deposit Kak\n\n*_Untuk Cara Pengisian Limit Dapat Menggunakan Cara Reply/Kirim Bukti Pembayaran Dengan Caption Contoh :_*\n\n${prefix}buylimit JUMLAHLIMIT|CATATAN\n\n_Contoh :_\n${prefix}buylimit 100|Buy Limit Kak\n\n*_Harga 1 Limit Adalah ${profit} Berarti ${hargalimit} Rupiah Per ${limitrate} Limit_*\n\n*_Saldo/Limit Akan Masuk Ketika Owner Mengklik Tombol Setuju Yang Dikirim Bot!._*\n\nNB : *_Perhatian Untuk Minimal Deposit Adalah ${minimaldepo}!. Dan Untuk Limit Adalah ${minimallimit}!. Pastikan Anda Transfer Untuk Pembelian Limit Atau Deposit Di Atas Minimal Transaksi Terimakasih...!_*`
+      m.reply(ezaaja)
     break;
-    case "bukti" :
+    case "addmoney" : {
+      if (!isCreator) return m.reply (mess.owner)
+      let saldo = text.split("|")[0] * 1
+      let nomor = text.split("|")[1]
+      if (!nomor) return m.reply(`*Harap Isi Nominal Dan Tujuan*`)
+      if (isNaN(parseInt(saldo))) return m.reply('Deposit Harus Berupa Angka!')
+      addMonUser(nomor + `@s.whatsapp.net`, saldo)
+      m.reply(`*_Sukses Menambah Saldo ${nomor}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Anda Telah Mengirim Saldo Secara Manual Saldo Telah Di Tambahkan!._*`)
+    }
+    break;
+    case "addlimit" : {
+      if (!isCreator) return m.reply (mess.owner)
+      let limit = text.split("|")[0] * 1
+      let nomor = text.split("|")[1]
+      if (!nomor) return m.reply(`*Harap Isi Limit Dan Tujuan*`)
+      if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
+      addLimUser(nomor + `@s.whatsapp.net`, limit)
+      m.reply(`*_Sukses Menambah Limit ${nomor}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Anda Telah Mengirim Limit Secara Manual Limit Telah Di Tambahkan!._*`)
+    }
+    break;
+    // Start Bukti
+    case "bukti" : {
       if (isBanned) return m.reply(`*You Have Been Banned*`)
       let depo = text.split("|")[0]
       let catatnya = text.split("|")[1]
+      if (!catatnya) return m.reply(`*Harap Isi Nominal Dan Catatan*`)
       let depos = `${formatmoney(depo)}`
-      if (isNaN(parseInt(depo))) return reply('Deposit Harus Berupa Angka!')
+      if (depo < minimaldepo) return m.reply(`*_Minimal Deposit Adalah ${minimaldepo}!. Silahkan Ulangi Transaksi_*`)
+      if (isNaN(parseInt(depo))) return m.reply('Deposit Harus Berupa Angka!')
       let bukti = `*─ 「 DEPOSIT USER 」 ─*\n*_User Deposite Request_*\n_📍 Balance Before : ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n_📍 Deposit : ${depos}_\n_📍 Uid : ${sender.replace("@s.whatsapp.net", "")}_\n_📍 Catatan : ${catatnya}_\n\n*_Identifikasi Bukti Dengan Cermat Agar Tidak Terjadi Penipuan!._*`
       if (/image/.test(mime)) {
         let media = await quoted.download()
@@ -999,26 +1427,70 @@ case "updatelayanan" : {
         let buttons = [
           { buttonId: prefix+`deposetuju ${depo}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
           { buttonId: prefix+`depotidak ${m.sender}`, buttonText: { displayText: 'Tidak Setuju' }, type: 1 }
-          ]
-          client.sendButtonText(owner+`@s.whatsapp.net`, buttons, `${bukti}`, `@RezaDevv`, m)
-          }
-      break
-      case "deposetuju" :
-      if (!isCreator) return reply(mess.owner)
-      let jumbelah = text.split("|")[0] * 1
-      let siapah = text.split("|")[1]
-      addMonUser(siapah, jumbelah)
-      reply('*_Sukses Deposit_*')
-      let buttons = [
-      { buttonId: prefix+`menu`, buttonText: { displayText: 'Dashboard' }, type: 1 },
-      { buttonId: prefix+`topup`, buttonText: { displayText: 'Top Up' }, type: 1 }
-      ]
-      client.sendButtonText(`${siapah}`, buttons, `*_Topup Anda Berhasil Di Setujui, Silahkan Melakukan TopUp Dengan Mudah Hanya Di Whats Payment!_*`, `@RezaDevv`, m)
-      break
-      case "depotidak" :
-      if (!isCreator) return reply(mess.owner)
-      reply('*_Deposit Tidak Akan Dilanjutkan_*')
-      client.sendMessage(`${text}`, {text: `*_Topup Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
+        ]
+        client.sendButtonText(owner+`@s.whatsapp.net`, buttons, `${bukti}`, `${packname}`, m)
+      }
+    }
+      break;
+      case "deposetuju" : {
+        if (!isCreator) return m.reply(mess.owner)
+        let jumbelah = text.split("|")[0] * 1
+        let siapah = text.split("|")[1]
+        addMonUser(siapah, jumbelah)
+        m.reply('*_Sukses Deposit_*')
+        let buttons = [
+          { buttonId: prefix+`menu`, buttonText: { displayText: 'Dashboard' }, type: 1 },
+          { buttonId: prefix+`topup`, buttonText: { displayText: 'Top Up' }, type: 1 }
+        ]
+        client.sendButtonText(`${siapah}`, buttons, `*_Topup Anda Berhasil Di Setujui, Silahkan Melakukan TopUp Dengan Mudah Hanya Di Whats Payment!_*`, `@RezaDevv`, m)
+      }
+        break;
+        case "depotidak" : {
+          if (!isCreator) return m.reply(mess.owner)
+          m.reply('*_Deposit Tidak Akan Dilanjutkan_*')
+          client.sendMessage(`${text}`, {text: `*_Topup Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
+        }
+        break;
+        // End Bukti
+      // Start Buy limit
+      case "buylimit" : {
+      if (isBanned) return m.reply(`*You Have Been Banned*`)
+      let limitnya = text.split("|")[0]
+      let noted = text.split("|")[1]
+      if (!limitnya) return m.reply(`*Harap Isi Nominal Dan Catatan*`)
+      let limits = `${formatmoney(limitnya)}`
+      if (limitnya < minimallimit) return m.reply(`*_Minimal Pengisian Limit Adalah ${minimallimit}!. Silahkan Ulangi Transaksi_*`)
+      if (isNaN(parseInt(limitnya))) return m.reply('Limit Harus Berupa Angka!')
+      let buktipembayaran = `*─ 「 BUY LIMIT USER 」 ─*\n*_User Limit Request_*\n_📍 Limit Before : ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "0,00")}_\n_📍 Limit : ${limits}_\n_📍 Uid : ${sender.replace("@s.whatsapp.net", "")}_\n_📍 Catatan : ${noted}_\n\n*_Identifikasi Bukti Dengan Cermat Agar Tidak Terjadi Penipuan!._*`
+      if (/image/.test(mime)) {
+        let media = await quoted.download()
+        client.sendImage(`${owner}@s.whatsapp.net`, media, `Request From: ${sender.replace("@s.whatsapp.net", "")}`, m)
+        let buttons = [
+          { buttonId: prefix+`limitsetuju ${limitnya}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
+          { buttonId: prefix+`limittolak ${m.sender}`, buttonText: { displayText: 'Tidak Setuju' }, type: 1 }
+        ]
+        client.sendButtonText(owner+`@s.whatsapp.net`, buttons, `${buktipembayaran}`, `${packname}`, m)
+      }
+    }
+    break;
+      case "limitsetuju" : {
+        if (!isCreator) return m.reply(mess.owner)
+        let jmlhlimit = text.split("|")[0] * 1
+        let userreq = text.split("|")[1]
+        addLimUser(userreq, jmlhlimit)
+        m.reply('*_Sukses Buy Limit_*')
+        let buttons = [
+          { buttonId: prefix+`menu`, buttonText: { displayText: 'Dashboard' }, type: 1 },
+          { buttonId: prefix+`topup`, buttonText: { displayText: 'Top Up' }, type: 1 }
+        ]
+        client.sendButtonText(`${userreq}`, buttons, `*_Buy Limit Anda Berhasil Di Setujui, Silahkan Melakukan TopUp Dengan Mudah Hanya Di Whats Payment!_*`, `${packname}`, m)
+      }
+        break;
+        case "limittolak" : {
+          if (!isCreator) return m.reply(mess.owner)
+          m.reply('*_Buy Limit Tidak Akan Dilanjutkan_*')
+          client.sendMessage(`${text}`, {text: `*_Buy Limit Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
+      }
       break;
       case "creditreseller" : {
         if (!isCreator) return m.reply(mess.owner)
@@ -1035,6 +1507,24 @@ case "updatelayanan" : {
           }
       })
     }
+    break;
+    case "creditatlantic" : {
+      if (!isCreator) return m.reply(mess.owner)
+      let axios = require('axios')
+          axios('https://atlantic-pedia.co.id/api/profile',{
+            method: 'POST',
+            data: new URLSearchParams(Object.entries({
+              key: atlantickey,
+            }))}).then((res) => {
+              if (res.data.result == false) {
+                m.reply(`*_${res.data.data}_*`)
+              }
+              if (res.data.result == true) {
+                anjoy = `*── 「 Balance Vip Atlantic 」 ──*\n\n*_Name : ${res.data.data.full_name}_*\n*_Username : ${res.data.data.username}_*\n*_Balance : ${formatmoney(res.data.data.balance)}_*\n*_Order : ${res.data.data.order}_*\n*_Spent : ${res.data.data.spent}_*`
+                client.sendText(m.chat, anjoy, m) 
+              }
+            })
+          }
       break;
       case "creditdigiflazz" : {
         if (!isCreator) return m.reply(mess.owner)
@@ -1059,344 +1549,307 @@ case "updatelayanan" : {
           client.sendText(m.chat, anjir, m) 
         })
       }
-
       break;
-    case "listdmff" : 
-    if (isBanned) return m.reply(`*You Have Been Banned*`)
-    if (isGroup) throw mess.private
-    lisnya = `*── 「 DIAMOND FREE FIRE 」 ──*
-
-_📍 ${ptricelist.ff.UPF5.nama} : ${ptricelist.ff.UPF5.harga}_
-_📍 ${ptricelist.ff.UPF12.nama} : ${ptricelist.ff.UPF12.harga}_
-_📍 ${ptricelist.ff.UPF50.nama} : ${ptricelist.ff.UPF50.harga}_
-_📍 ${ptricelist.ff.UPF70.nama} : ${ptricelist.ff.UPF70.harga}_
-_📍 ${ptricelist.ff.UPF140.nama} : ${ptricelist.ff.UPF140.harga}_
-_📍 ${ptricelist.ff.UPF355.nama} : ${ptricelist.ff.UPF355.harga}_
-_📍 ${ptricelist.ff.UPF720.nama} : ${ptricelist.ff.UPF720.harga}_
-
-Cara Pembelian:
-${prefix}topupff ID|JUMLAH_DIAMOND\n
-Example:
-${prefix}topupff 123456789|1450
-
-Note: *Transaksi akan diproses otomatis oleh sistem tunggu 3-5 menit atau cek secara berkala.*`
-reply(lisnya)
-  break;
-  case "listdmml" :
-  if (isBanned) return m.reply(`*You Have Been Banned*`)
-  if (isGroup) throw mess.private
-  lisya = `*── 「 DIAMOND MOBILE LEGENDS 」 ──*
-
-_📍 ${pricelistml .ml.ZIDMBL17.nama} : ${pricelistml .ml.ZIDMBL17.harga}_
-_📍 ${pricelistml .ml.ZIDMBL34.nama} : ${pricelistml .ml.ZIDMBL34.harga}_
-_📍 ${pricelistml .ml.ZIDMBL50.nama} : ${pricelistml .ml.ZIDMBL50.harga}_
-_📍 ${pricelistml .ml.ZIDMBL66.nama} : ${pricelistml .ml.ZIDMBL66.harga}_
-_📍 ${pricelistml .ml.ZIDMBL74.nama} : ${pricelistml .ml.ZIDMBL74.harga}_
-_📍 ${pricelistml .ml.ZIDMBL83.nama} : ${pricelistml .ml.ZIDMBL83.harga}_
-_📍 ${pricelistml .ml.ZIDMBL184.nama} : ${pricelistml .ml.ZIDMBL184.harga}_
-_📍 ${pricelistml .ml.ZIDMBL366.nama} : ${pricelistml .ml.ZIDMBL366.harga}_
-_📍 ${pricelistml .ml.ZIDMBL758.nama} : ${pricelistml .ml.ZIDMBL758.harga}_
-
-Cara Pembelian:
-${prefix}topupml ID|SERVER|JUMLAH_DIAMOND\n
-Contoh:
-${prefix}topupml 123456789|1450|74
-
-Note: *Transaksi akan diproses otomatis oleh sistem tunggu 3-5 menit atau cek secara berkala.*`
-reply(lisya)
-    break;
+      case "listdmff" : 
+      if (isBanned) return m.reply(`*You Have Been Banned*`)
+      if (isGroup) throw mess.private
+      lisnya = `*── 「 DIAMOND FREE FIRE 」 ──*\n\n_📍 ${ptricelist.ff.UPF5.nama} : ${ptricelist.ff.UPF5.harga}_\n_📍 ${ptricelist.ff.UPF12.nama} : ${ptricelist.ff.UPF12.harga}_\n_📍 ${ptricelist.ff.UPF50.nama} : ${ptricelist.ff.UPF50.harga}_\n_📍 ${ptricelist.ff.UPF70.nama} : ${ptricelist.ff.UPF70.harga}_\n_📍 ${ptricelist.ff.UPF140.nama} : ${ptricelist.ff.UPF140.harga}_\n_📍 ${ptricelist.ff.UPF355.nama} : ${ptricelist.ff.UPF355.harga}_\n_📍 ${ptricelist.ff.UPF720.nama} : ${ptricelist.ff.UPF720.harga}_\n\nCara Pembelian:\n${prefix}topupff ID|JUMLAH_DIAMOND\n\nExample:\n${prefix}topupff 123456789|1450\n\nNote: *Transaksi akan diproses otomatis oleh sistem tunggu 3-5 menit atau cek secara berkala.*`
+      m.reply(lisnya)
+      break;
+      case "listdmml" :
+        if (isBanned) return m.reply(`*You Have Been Banned*`)
+        if (isGroup) throw mess.private
+        lisya = `*── 「 DIAMOND MOBILE LEGENDS 」 ──*\n\n_📍 ${pricelistml .ml.ZIDMBL17.nama} : ${pricelistml .ml.ZIDMBL17.harga}_\n_📍 ${pricelistml .ml.ZIDMBL34.nama} : ${pricelistml .ml.ZIDMBL34.harga}_\n_📍 ${pricelistml .ml.ZIDMBL50.nama} : ${pricelistml .ml.ZIDMBL50.harga}_\n_📍 ${pricelistml .ml.ZIDMBL66.nama} : ${pricelistml .ml.ZIDMBL66.harga}_\n_📍 ${pricelistml .ml.ZIDMBL74.nama} : ${pricelistml .ml.ZIDMBL74.harga}_\n_📍 ${pricelistml .ml.ZIDMBL83.nama} : ${pricelistml .ml.ZIDMBL83.harga}_\n_📍 ${pricelistml .ml.ZIDMBL184.nama} : ${pricelistml .ml.ZIDMBL184.harga}_\n_📍 ${pricelistml .ml.ZIDMBL366.nama} : ${pricelistml .ml.ZIDMBL366.harga}_\n_📍 ${pricelistml .ml.ZIDMBL758.nama} : ${pricelistml .ml.ZIDMBL758.harga}_\n\nCara Pembelian:\n${prefix}topupml ID|SERVER|JUMLAH_DIAMOND\n\nContoh:\n${prefix}topupml 123456789|1450|74\n\nNote: *Transaksi akan diproses otomatis oleh sistem tunggu 3-5 menit atau cek secara berkala.*`
+        m.reply(lisya)
+  
+        break;
         case 'owner': case 'creator': {
           if (isBanned) return m.reply(`*You Have Been Banned*`)
           client.sendContact(m.chat, global.owner, m)
-      }
+        }
       break;
       case 'topupff': {
-      if (isGroup) throw mess.private
-      let idff = text.split("|")[0]
-      let produkid = text.split("|")[1]
-      if (!idff) throw `Example : ${prefix + command} ID|JUMLAH_DM`
-      if (!produkid) throw `Example : ${prefix + command} ID|JUMLAH_DM`
-      if (isNaN(parseInt(idff))) return reply('Id Harus Berupa Angka!')
-      if (isNaN(parseInt(produkid))) return reply('Jumlah Harus Berupa Angka!')
-      let idharga = `UPF${produkid}`
-      if (idharga == "UPF5"){
-      global.hargadmff = 1000
+        if (isGroup) throw mess.private
+        let idff = text.split("|")[0]
+        let produkid = text.split("|")[1]
+        if (!idff) throw `Example : ${prefix + command} ID|JUMLAH_DM`
+        if (!produkid) throw `Example : ${prefix + command} ID|JUMLAH_DM`
+        if (isNaN(parseInt(idff))) return m.reply('Id Harus Berupa Angka!')
+        if (isNaN(parseInt(produkid))) return m.reply('Jumlah Harus Berupa Angka!')
+        let idharga = `UPF${produkid}`
+        if (idharga == "UPF5"){
+          global.hargadmff = 1000
+        }
+        if (idharga == "UPF12"){
+          global.hargadmff = 2000
+        }
+        if (idharga == "UPF50"){
+          global.hargadmff = 8000
+        }
+        if (idharga == "UPF70"){
+          global.hargadmff = 10000
+        }
+        if (idharga == "UPF140"){
+          global.hargadmff = 20000
+        }
+        if (idharga == "UPF355"){
+          global.hargadmff = 50000
+        }
+        if (idharga == "UPF720"){
+          global.hargadmff = 100000
+        }
+        if (getMonUser(sender) < global.hargadmff) {
+          m.reply('*_Saldo User Anda Kurang!. Lakukan Deposit Terlebih Dahulu Untuk Melakukan Transaksi!_*')
+        } else if(getMonUser(sender) > global.hargadmff) {
+          var axios = require('axios');
+          var config = {
+            method: 'get',
+            url: `https://v1.apigames.id/merchant/${merchantapigames}/cek-username/freefire?user_id=${idff}&signature=${signatureapigames}`,
+            headers: { }
+          };
+          axios(config)
+          .then(function (response) {
+            let buttons = [
+              { buttonId: prefix+`konfirmasiff ${idff}|${produkid}`, buttonText: { displayText: 'Konfirmasi' }, type: 1 },
+            ]
+            if (response.data.error_msg) {
+              m.reply('*Invalid Id*')
+            } else if(response.data.message) {
+              client.sendButtonText(m.chat, buttons, `*── 「 CHECKING ACCOUNT GAME 」 ──*\n\n_Details Produk Before Confirm:_\n_📌 Id Game : ${idff}_\n_📌 NickName : ${response.data.data.username}_\n_📌 Nama Item : ${produkid} Diamond ( FreeFire )_\n\n*_Klik konfirmasi Untuk Melanjutkan Transaksi Tunggu 3-5 Menit Atau Cek Secara Berkala_*`, `@RezaDevv`, m)
+            } 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        }
+        break;
       }
-      if (idharga == "UPF12"){
-      global.hargadmff = 2000
-      }
-      if (idharga == "UPF50"){
-      global.hargadmff = 8000
-      }
-      if (idharga == "UPF70"){
-      global.hargadmff = 10000
-      }
-      if (idharga == "UPF140"){
-      global.hargadmff = 20000
-      }
-      if (idharga == "UPF355"){
-      global.hargadmff = 50000
-      }
-      if (idharga == "UPF720"){
-      global.hargadmff = 100000
-      }
-      if (getMonUser(sender) < global.hargadmff) {
-       reply('*_Saldo User Anda Kurang!. Lakukan Deposit Terlebih Dahulu Untuk Melakukan Transaksi!_*')
-       } else if(getMonUser(sender) > global.hargadmff) {
-      var axios = require('axios');
+      case 'konfirmasiff': {
+        if (isGroup) mess.private
+        let idff = text.split("|")[0]
+        let produkid = text.split("|")[1]
+        let trxid = acakindong(001, 1000)
+        let refid = `${trxid}`
+        let idharga = `UPF${produkid}`
+        var axios = require('axios');
+        var config = {
+          method: 'get',
+          url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${merchantapigames}&secret=${secretapigames}&produk=${idharga}&tujuan=${idff}&ref=TRX${refid}`,
+          headers: { }
+        };
       
-      var config = {
-        method: 'get',
-        url: `https://v1.apigames.id/merchant/${merchantapigames}/cek-username/freefire?user_id=${idff}&signature=${signatureapigames}`,
-        headers: { }
-      };
-      
-      axios(config)
-      .then(function (response) {
-      let buttons = [
-      { buttonId: prefix+`konfirmasiff ${idff}|${produkid}`, buttonText: { displayText: 'Konfirmasi' }, type: 1 },
-      ]
-      if (response.data.error_msg) {
-      reply('*Invalid Id*')
-      } else if(response.data.message) {
-      client.sendButtonText(m.chat, buttons, `*── 「 CHECKING ACCOUNT GAME 」 ──*\n\n_Details Produk Before Confirm:_\n_📌 Id Game : ${idff}_\n_📌 NickName : ${response.data.data.username}_\n_📌 Nama Item : ${produkid} Diamond ( FreeFire )_\n\n*_Klik konfirmasi Untuk Melanjutkan Transaksi Tunggu 3-5 Menit Atau Cek Secara Berkala_*`, `@RezaDevv`, m)
-      } 
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-      }
-      break
-      }
-      case 'konfirmasiff':{
-      if (isGroup) mess.private
-      let idff = text.split("|")[0]
-      let produkid = text.split("|")[1]
-      let trxid = acakindong(001, 1000)
-      let refid = `${trxid}`
-      let idharga = `UPF${produkid}`
-      var axios = require('axios');
-      var config = {
-        method: 'get',
-        url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${merchantapigames}&secret=${secretapigames}&produk=${idharga}&tujuan=${idff}&ref=TRX${refid}`,
-        headers: { }
-      };
-      
-      axios(config)
-      .then(function (response) {
-      let idharga = `UPF${produkid}`
-      if (idharga == "UPF5"){
-      global.hargadmff = 1000
-      }
-      if (idharga == "UPF12"){
-      global.hargadmff = 2000
-      }
-      if (idharga == "UPF50"){
-      global.hargadmff = 8000
-      }
-      if (idharga == "UPF70"){
-      global.hargadmff = 10000
-      }
-      if (idharga == "UPF140"){
-      global.hargadmff = 20000
-      }
-      if (idharga == "UPF355"){
-      global.hargadmff = 50000
-      }
-      if (idharga == "UPF720"){
-      global.hargadmff = 100000
-      }
-      let workid = `*── 「 TRANSAKSI SUKSES 」 ──*\n\n📌 _Harga : Rp${global.hargadmff}_\n_📌 Serial Num : ${response.data.data.sn}_\n_📌 Nama Item : ${produkid} Diamond ( FreeFire )_\n_📌 Trx Id : ${response.data.data.trx_id}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._*\n\nNote: *_Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!._*`
-      let workd = `*── 「 TRANSAKSI GAGAL 」 ──*\n\n*_Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!._*`
-      if(response.data.data.status == "Sukses"){
-      if (idharga == "UPF5"){
-      moneyAdd(m.sender, 1000)
-      reply(workid)
-      }
-      if (idharga == "UPF12"){
-      moneyAdd(m.sender, 2000)
-      reply(workid)
-      }
-      if (idharga == "UPF50"){
-      moneyAdd(m.sender, 8000)
-      reply(workid)
-      }
-      if (idharga == "UPF70"){
-      moneyAdd(m.sender, 10000)
-      reply(workid)
-      }
-      if (idharga == "UPF140"){
-      moneyAdd(m.sender, 20000)
-      reply(workid)
-      }
-      if (idharga == "UPF355"){
-      moneyAdd(m.sender, 50000)
-      reply(workid)
-      }
-      if (idharga == "UPF720"){
-      moneyAdd(m.sender, 100000)
-      reply(workid)
-      }
-      } else if(response.data.data.status == "Gagal"){
-      reply(workd)
-      }
-      })
-      break;
+        axios(config)
+        .then(function (response) {
+          let idharga = `UPF${produkid}`
+          if (idharga == "UPF5"){
+            global.hargadmff = 1000
+          }
+          if (idharga == "UPF12"){
+            global.hargadmff = 2000
+          }
+          if (idharga == "UPF50"){
+            global.hargadmff = 8000
+          }
+          if (idharga == "UPF70"){
+            global.hargadmff = 10000
+          }
+          if (idharga == "UPF140"){
+            global.hargadmff = 20000
+          }
+          if (idharga == "UPF355"){
+            global.hargadmff = 50000
+          }
+          if (idharga == "UPF720"){
+            global.hargadmff = 100000
+          }
+          let workid = `*── 「 TRANSAKSI SUKSES 」 ──*\n\n📌 _Harga : Rp${global.hargadmff}_\n_📌 Serial Num : ${response.data.data.sn}_\n_📌 Nama Item : ${produkid} Diamond ( FreeFire )_\n_📌 Trx Id : ${response.data.data.trx_id}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._*\n\nNote: *_Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!._*`
+          let workd = `*── 「 TRANSAKSI GAGAL 」 ──*\n\n*_Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!._*`
+          if(response.data.data.status == "Sukses"){
+            if (idharga == "UPF5"){
+              moneyAdd(m.sender, 1000)
+              m.reply(workid)
+            }
+            if (idharga == "UPF12"){
+              moneyAdd(m.sender, 2000)
+              m.reply(workid)
+            }
+            if (idharga == "UPF50"){
+              moneyAdd(m.sender, 8000)
+              m.reply(workid)
+            }
+            if (idharga == "UPF70"){
+              moneyAdd(m.sender, 10000)
+              m.reply(workid)
+            }
+            if (idharga == "UPF140"){
+              moneyAdd(m.sender, 20000)
+              m.reply(workid)
+            }
+            if (idharga == "UPF355"){
+              moneyAdd(m.sender, 50000)
+              m.reply(workid)
+            }
+            if (idharga == "UPF720"){
+              moneyAdd(m.sender, 100000)
+              m.reply(workid)
+            }
+          } else if(response.data.data.status == "Gagal"){
+            m.reply(workd)
+          }
+        })
+        break;
       }
       case 'topupml': {
-      if (isGroup) throw mess.private
-      let idml1 = text.split("|")[0]
-      let idml2 = text.split("|")[1]
-      let idml = `${idml1}${idml2}`
-      let produkid = text.split("|")[2]
-      if (isNaN(parseInt(produkid))) return reply('Jumlah Harus Berupa Angka!')
-      if (isNaN(parseInt(idml1))) return reply('Id Harus Berupa Angka!')
-      if (isNaN(parseInt(idml2))) return reply('Server Harus Berupa Angka!')
-      let idharga = `ZIDMBL${produkid}`
-      if (idharga == "ZIDMBL17"){
-      global.hargadmml = 5000
+        if (isGroup) throw mess.private
+        let idml1 = text.split("|")[0]
+        let idml2 = text.split("|")[1]
+        let idml = `${idml1}${idml2}`
+        let produkid = text.split("|")[2]
+        if (isNaN(parseInt(produkid))) return m.reply('Jumlah Harus Berupa Angka!')
+        if (isNaN(parseInt(idml1))) return m.reply('Id Harus Berupa Angka!')
+        if (isNaN(parseInt(idml2))) return m.reply('Server Harus Berupa Angka!')
+        let idharga = `ZIDMBL${produkid}`
+        if (idharga == "ZIDMBL17"){
+          global.hargadmml = 5000
+        }
+        if (idharga == "ZIDMBL34"){
+          global.hargadmml = 9500
+        }
+        if (idharga == "ZIDMBL50"){
+          global.hargadmml = 14000
+        }
+        if (idharga == "ZIDMBL66"){
+          global.hargadmml = 18500
+        }
+        if (idharga == "ZIDMBL74"){
+          global.hargadmml = 20500
+        }
+        if (idharga == "ZIDMBL83"){
+          global.hargadmml = 23000
+        }
+        if (idharga == "ZIDMBL184"){
+          global.hargadmml = 50500
+        }
+        if (idharga == "ZIDMBL366"){
+          global.hargadmml = 100500
+        }
+        if (idharga == "ZIDMBL758"){
+          global.hargadmml = 201000
+        }
+        
+        if (getMonUser(sender) < global.hargadmml) {
+          m.reply('*_Saldo User Anda Kurang!. Lakukan Deposit Terlebih Dahulu Untuk Melakukan Transaksi!_*')
+        } else if(getMonUser(sender) > global.hargadmml) {
+          var axios = require('axios');
+          var config = {
+            method: 'get',
+            url: `https://v1.apigames.id/merchant/${merchantapigames}/cek-username/mobilelegend?user_id=${idml}&signature=${signatureapigames}`,
+            headers: { }
+          };
+          axios(config)
+          .then(function (response) {
+            let buttons = [
+              { buttonId: prefix+`konfirmasiml ${idml1}|${idml2}|${produkid}`, buttonText: { displayText: 'Konfirmasi' }, type: 1 },
+            ]
+            if (response.data.error_msg) {
+              m.reply('*Invalid Id Or Zone*')
+            }else if (response.data.message) {
+              client.sendButtonText(m.chat, buttons, `*── 「 CHECKING ACCOUNT GAME 」 ──*\n\n_Details Produk Before Confirm:_\n_📌 Id Game : ${idml1} (${idml2})_\n_📌 NickName : ${response.data.data.username}_\n_📌 Nama Item : ${produkid} Diamond ( Mlbb )_\n\n*_Klik konfirmasi Untuk Melanjutkan Transaksi Tunggu 3-5 Menit Atau Cek Secara Berkala_*`, `@RezaDevv`, m)
+            }
+          })
+          .catch(function (error) {
+            m.reply(error);
+          });
+        }
       }
-      if (idharga == "ZIDMBL34"){
-      global.hargadmml = 9500
-      }
-      if (idharga == "ZIDMBL50"){
-      global.hargadmml = 14000
-      }
-      if (idharga == "ZIDMBL66"){
-      global.hargadmml = 18500
-      }
-      if (idharga == "ZIDMBL74"){
-      global.hargadmml = 20500
-      }
-      if (idharga == "ZIDMBL83"){
-      global.hargadmml = 23000
-      }
-      if (idharga == "ZIDMBL184"){
-      global.hargadmml = 50500
-          }
-      if (idharga == "ZIDMBL366"){
-      global.hargadmml = 100500
-          }
-      if (idharga == "ZIDMBL758"){
-      global.hargadmml = 201000
-      }
-          
-      if (getMonUser(sender) < global.hargadmml) {
-        reply('*_Saldo User Anda Kurang!. Lakukan Deposit Terlebih Dahulu Untuk Melakukan Transaksi!_*')
-       } else if(getMonUser(sender) > global.hargadmml) {
-      var axios = require('axios');
-      var config = {
-        method: 'get',
-        url: `https://v1.apigames.id/merchant/${merchantapigames}/cek-username/mobilelegend?user_id=${idml}&signature=${signatureapigames}`,
-        headers: { }
-      };
-      
-      axios(config)
-      .then(function (response) {
-      let buttons = [
-      { buttonId: prefix+`konfirmasiml ${idml1}|${idml2}|${produkid}`, buttonText: { displayText: 'Konfirmasi' }, type: 1 },
-      ]
-      if (response.data.error_msg) {
-      reply('*Invalid Id Or Zone*')
-      }else if (response.data.message) {
-      client.sendButtonText(m.chat, buttons, `*── 「 CHECKING ACCOUNT GAME 」 ──*\n\n_Details Produk Before Confirm:_\n_📌 Id Game : ${idml1} (${idml2})_\n_📌 NickName : ${response.data.data.username}_\n_📌 Nama Item : ${produkid} Diamond ( Mlbb )_\n\n*_Klik konfirmasi Untuk Melanjutkan Transaksi Tunggu 3-5 Menit Atau Cek Secara Berkala_*`, `@RezaDevv`, m)
-    
-      } 
-      })
-      .catch(function (error) {
-        reply(error);
-      });
-      }
-      }
-      break
+      break;
       case 'konfirmasiml':{
-      if (isGroup) throw mess.private
-      let idml1 = text.split("|")[0]
-      let idml2 = text.split("|")[1]
-      let idml =`${idml1}${idml2}`
-      let produkid = `${text.split("|")[2]}`
-      let refdi = acakindong(001, 1000)
-      let refid = `${refdi}`
-      let idharga = `ZIDMBL${produkid}`
-      var axios = require('axios');
-      var config = {
-        method: 'get',
-        url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${merchantapigames}&secret=${secretapigames}&produk=${idharga}&tujuan=${idml}&ref=TRX${refid}`,
-        headers: { }
-      };
-      
-      axios(config)
-      .then(function (response) {
-      if (idharga == "ZIDMBL17"){
-      global.hargadmml = 5000
-      }
-      if (idharga == "ZIDMBL34"){
-      global.hargadmml = 9500
-      }
-      if (idharga == "ZIDMBL50"){
-      global.hargadmml = 14000
-      }
-      if (idharga == "ZIDMBL66"){
-      global.hargadmml = 18500
-      }
-      if (idharga == "ZIDMBL74"){
-      global.hargadmml = 20500
-      }
-      if (idharga == "ZIDMBL83"){
-      global.hargadmml = 23000
-      }
-      if (idharga == "ZIDMBL184"){
-      global.hargadmml = 50500
-      }
-      if (idharga == "ZIDMBL366"){
-      global.hargadmml = 100500
+        if (isGroup) throw mess.private
+        let idml1 = text.split("|")[0]
+        let idml2 = text.split("|")[1]
+        let idml =`${idml1}${idml2}`
+        let produkid = `${text.split("|")[2]}`
+        let refdi = acakindong(001, 1000)
+        let refid = `${refdi}`
+        let idharga = `ZIDMBL${produkid}`
+        var axios = require('axios');
+        var config = {
+          method: 'get',
+          url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${merchantapigames}&secret=${secretapigames}&produk=${idharga}&tujuan=${idml}&ref=TRX${refid}`,
+          headers: { }
+        };
+        axios(config)
+        .then(function (response) {
+          if (idharga == "ZIDMBL17"){
+            global.hargadmml = 5000
           }
-      if (idharga == "ZIDMBL758"){
-      global.hargadmml = 201000
-      }
-      let workid = `*── 「 TRANSAKSI SUKSES 」 ──*\n\n📌 _Harga : Rp${global.hargadmml}_\n_📌 Serial Num : ${response.data.data.sn}_\n_📌 Nama Item : ${produkid} Diamond ( Mlbb )_\n_📌 Trx Id : ${response.data.data.trx_id}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._*\n\nNote: *_Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!._*`
-      let workd = `*── 「 TRANSAKSI GAGAL 」 ──*\n\n*_Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!._*`
-      if(response.data.data.status == "Sukses"){
-      if (idharga == "ZIDMBL17"){
-      moneyAdd(m.sender, 5000)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL34"){
-      moneyAdd(m.sender, 9500)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL50"){
-      moneyAdd(m.sender, 14000)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL66"){
-      moneyAdd(m.sender, 18500)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL74"){
-      moneyAdd(m.sender, 20500)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL83"){
-      moneyAdd(m.sender, 23000)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL184"){
-      moneyAdd(m.sender, 50500)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL366"){
-      moneyAdd(m.sender, 100500)
-      reply(workid)
-      }
-      if (idharga == "ZIDMBL758"){
-      moneyAdd(m.sender, 201000)
-      reply(workid)
-      }
-      } else if(response.data.data.status == "Gagal"){
-      reply(workd)
-      }
-      })
+          if (idharga == "ZIDMBL34"){
+            global.hargadmml = 9500
+          }
+          if (idharga == "ZIDMBL50"){
+            global.hargadmml = 14000
+          }
+          if (idharga == "ZIDMBL66"){
+            global.hargadmml = 18500
+          }
+          if (idharga == "ZIDMBL74"){
+            global.hargadmml = 20500
+          }
+          if (idharga == "ZIDMBL83"){
+            global.hargadmml = 23000
+          }
+          if (idharga == "ZIDMBL184"){
+            global.hargadmml = 50500
+          }
+          if (idharga == "ZIDMBL366"){
+            global.hargadmml = 100500
+          }
+          if (idharga == "ZIDMBL758"){
+            global.hargadmml = 201000
+          }
+          let workid = `*── 「 TRANSAKSI SUKSES 」 ──*\n\n📌 _Harga : Rp${global.hargadmml}_\n_📌 Serial Num : ${response.data.data.sn}_\n_📌 Nama Item : ${produkid} Diamond ( Mlbb )_\n_📌 Trx Id : ${response.data.data.trx_id}_\n\n*_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._*\n\nNote: *_Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!._*`
+          let workd = `*── 「 TRANSAKSI GAGAL 」 ──*\n\n*_Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!._*`
+          if(response.data.data.status == "Sukses"){
+            if (idharga == "ZIDMBL17"){
+              moneyAdd(m.sender, 5000)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL34"){
+              moneyAdd(m.sender, 9500)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL50"){
+              moneyAdd(m.sender, 14000)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL66"){
+              moneyAdd(m.sender, 18500)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL74"){
+              moneyAdd(m.sender, 20500)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL83"){
+              moneyAdd(m.sender, 23000)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL184"){
+              moneyAdd(m.sender, 50500)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL366"){
+              moneyAdd(m.sender, 100500)
+              m.reply(workid)
+            }
+            if (idharga == "ZIDMBL758"){
+              moneyAdd(m.sender, 201000)
+              m.reply(workid)
+            }
+          } else if(response.data.data.status == "Gagal"){
+            m.reply(workd)
+          }
+        })
       break;
       }
       case 'restart' :
@@ -1567,14 +2020,14 @@ let teks = `══✪〘 *👥 Tag All* 〙✪══
            }
            break;
            case 'getip': {
-           if (!isCreator) throw mess.owner
+            if (!isCreator) throw mess.owner
             var http = require('http')
             http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-            resp.on('data', function(ip) {
+              resp.on('data', function(ip) {
                 m.reply("My public IP address is: " + ip);
+              })
             })
-                })
-            }
+          }
           break;
           case 'ping': case 'botstatus': case 'statusbot': {
             if (!isCreator) throw mess.owner
@@ -1792,9 +2245,11 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
             if (argsLog || (isCmd2 && !m.isGroup)) {
               // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
               console.log(chalk.black(chalk.bgRed("[ ERROR ]")), color("command", "turquoise"), color(`${prefix}${command}`, "turquoise"), color("tidak tersedia", "turquoise"));
+              client.sendMessage(m.chat, {text: "*_Command Tidak Tersedia Silahkan Ketik .menu Untuk Menampilkan Menu Yang Tersedia Terimakasih!..._*"})
             } else if (argsLog || (isCmd2 && m.isGroup)) {
               // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
               console.log(chalk.black(chalk.bgRed("[ ERROR ]")), color("command", "turquoise"), color(`${prefix}${command}`, "turquoise"), color("tidak tersedia", "turquoise"));
+              client.sendMessage(m.chat, {text: "*_Command Tidak Tersedia Silahkan Ketik .menu Untuk Menampilkan Menu Yang Tersedia Terimakasih!..._*"})
             }
           }
         }
