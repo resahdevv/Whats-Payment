@@ -183,6 +183,19 @@ function formatmoney(n, opt = {}) {
   return n.toLocaleString("id", { style: "currency", currency: opt.current })
 }
 
+function generateRandomString(length) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+
+  for (var i = 0; i < length; i++) {
+    var randomIndex = Math.floor(Math.random() * charactersLength);
+    result += characters.charAt(randomIndex);
+  }
+
+  return result;
+}
+
 function acakindong(min, max = null) {
   if (max !== null) {
   min = Math.ceil(min);
@@ -871,12 +884,12 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       switch (command) {
         case "help": case "menu":
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
+            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
             client.sendText(m.chat, anu, m)   
         break;
         case "ownermenu" :
         if (!isCreator) throw mess.owner
-        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}updatelayanan\n📍 ${prefix}creditatlantic\n📍 ${prefix}creditreseller\n📍 ${prefix}creditdigiflazz\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
+        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}caradigi (owner only)\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}updatelayanan\n📍 ${prefix}cekatc (balance)\n📍 ${prefix}cekvip (balance)\n📍 ${prefix}cekdigi (balance)\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
         client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
@@ -1536,18 +1549,70 @@ case "updatelayanan" : {
   }
 }
     break;
-    case "caradepo"  :
+    case "caradepo"  : {
       if (isBanned) return m.reply(`*You Have Been Banned*`)
       let ezaaja = `*─ 「 CARA DEPOSIT MANUAL」 ─*\n*_Berikut Adalah Cara Deposit Manual User!._*\n\n_For Your Information, Whats Payment Hanya Mendukung Deposit Melalui Ovo, Shopeepay, Dana, Qris Saja._\n\n_💸 Ovo : 085742632270_\n_💸 Shopeepay : 085742632270_\n_💸 Dana : 085742632270_\n_💸 Qris : wa.me/+6285742632270_\n\n*_Jika Sudah Melakukan Transfer Harap Kirim Bukti Dengan Cara Mengirim Screenshot Dengan Caption, Contoh :_*\n\n${prefix}bukti JUMLAH|CATATAN\n\n_Contoh :_\n${prefix}bukti 10000|Deposit Kak\n\n*_Untuk Cara Pengisian Limit Dapat Menggunakan Cara Reply/Kirim Bukti Pembayaran Dengan Caption Contoh :_*\n\n${prefix}buylimit JUMLAHLIMIT|CATATAN\n\n_Contoh :_\n${prefix}buylimit 100|Buy Limit Kak\n\n*_Harga 1 Limit Adalah ${profit} Berarti ${hargalimit} Rupiah Per ${limitrate} Limit_*\n\n*_Saldo/Limit Akan Masuk Ketika Owner Mengklik Tombol Setuju Yang Dikirim Bot!._*\n\nNB : *_Perhatian Untuk Minimal Deposit Adalah ${minimaldepo}!. Dan Untuk Limit Adalah ${minimallimit}!. Pastikan Anda Transfer Untuk Pembelian Limit Atau Deposit Di Atas Minimal Transaksi Terimakasih...!_*`
       m.reply(ezaaja)
+    }
+    break;
+    case "caradigi" : {
+      if (!isCreator) return m.reply (mess.owner)
+      let pesan = `*─ 「 CARA TRX DIGI 」 ─*\n*_Berikut Adalah Cara Transaksi Menggunakan Provider Digifalzz_*\n\n_Transaksi Ini Hanya Bisa Di Lakukan Oleh Owner Saja_\n_Untuk Melakukan Transaksi Menggunakan Digiflazz Hanya PerluMengetikan :_\n\n_Contoh :_\n_${prefix}topupdigi BUYER_SKU_CODE|CUTOMER_NO_\n\n_Maka :_\n_${prefix}topupdigi DANA10|085742632270_\n\n*_Begitulah Cara Melakukan Transaksi Menggunakan Provider Digiflazz Melalui Whats Payment_*`
+      let buttons = [
+        {buttonId: prefix + `ownermenu`, buttonText: { displayText: 'Dashboard Admin' }, type: 1}
+      ]
+      client.sendButtonText(m.sender, buttons, pesan, packname, m) 
+    }
+    break;
+    case "kirimsaldo" : {
+      let saldo = text.split("|")[0] * 1
+      let nomor = text.split("|")[1]
+      if (!nomor) return m.reply(`*_Harap Isi Nominal Dan Tujuan_*`)
+      if (isNaN(parseInt(saldo))) return m.reply('Saldo Harus Berupa Angka!')
+      if (getMonUser(sender) < saldo) return m.reply('*_Saldo Anda Kurang Untuk Melakukan Transfer_*')
+      if (getMonUser(sender) > saldo) {
+        moneyAdd(m.sender, saldo)
+        addMonUser(nomor.replace('08','628') + `@s.whatsapp.net`, saldo)
+        let psn = `*_Kamu Telah Menerima Saldo Dari ${sender.replace("@s.whatsapp.net", "")} Sebesar : ${formatmoney(saldo)}_*`
+        let buttons = [
+          {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
+        ]
+        client.sendButtonText(nomor.replace('08','628') + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
+        m.reply(`*_Sukses Mengirim Saldo Ke ${nomor.replace('08','628')}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Saldo Telah Terkirim Ke Nomor Tujuan_*`)
+      }
+    }
+    break;
+    case "kirimlimit" : {
+      let limit = text.split("|")[0] * 1
+      let nomor = text.split("|")[1]
+      if (!nomor) return m.reply(`*_Harap Isi Limit Dan Tujuan_*`)
+      if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
+      if (getLimUser(sender) < limit) return m.reply('*_Limit Anda Kurang Untuk Melakukan Transfer_*')
+      if (getLimUser(sender) > limit) {
+        limitAdd(m.sender, limit)
+        addLimUser(nomor.replace('08','628') + `@s.whatsapp.net`, limit)
+        let psn = `*_Kamu Telah Menerima Limit Dari ${sender.replace("@s.whatsapp.net", "")} Sebesar : ${formatmoney(limit)}_*`
+        let buttons = [
+          {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
+        ]
+        client.sendButtonText(nomor.replace('08','628') + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
+        m.reply(`*_Sukses Mengirim Limit Ke ${nomor.replace('08','628')}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Limit Telah Terkirim Ke Nomor Tujuan_*`)
+      }
+    }
+
     break;
     case "addmoney" : {
       if (!isCreator) return m.reply (mess.owner)
       let saldo = text.split("|")[0] * 1
       let nomor = text.split("|")[1]
-      if (!nomor) return m.reply(`*Harap Isi Nominal Dan Tujuan*`)
+      if (!nomor) return m.reply(`*_Harap Isi Nominal Dan Tujuan_*`)
       if (isNaN(parseInt(saldo))) return m.reply('Deposit Harus Berupa Angka!')
       addMonUser(nomor + `@s.whatsapp.net`, saldo)
+      let psn = `*_Anda Telah Mendapatkan Tambahan Saldo Sebesar : ${formatmoney(saldo)}_*`
+      let buttons  = [
+        {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
+      ]
+      client.sendButtonText(nomor + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
       m.reply(`*_Sukses Menambah Saldo ${nomor}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Anda Telah Mengirim Saldo Secara Manual Saldo Telah Di Tambahkan!._*`)
     }
     break;
@@ -1555,9 +1620,14 @@ case "updatelayanan" : {
       if (!isCreator) return m.reply (mess.owner)
       let limit = text.split("|")[0] * 1
       let nomor = text.split("|")[1]
-      if (!nomor) return m.reply(`*Harap Isi Limit Dan Tujuan*`)
+      if (!nomor) return m.reply(`*_Harap Isi Limit Dan Tujuan_*`)
       if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
       addLimUser(nomor + `@s.whatsapp.net`, limit)
+      let psn = `*_Anda Telah Mendapatkan Tambahan Limit Sebesar : ${formatmoney(limit)}_*`
+      let buttons  = [
+        {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
+      ]
+      client.sendButtonText(nomor + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
       m.reply(`*_Sukses Menambah Limit ${nomor}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Anda Telah Mengirim Limit Secara Manual Limit Telah Di Tambahkan!._*`)
     }
     break;
@@ -1566,7 +1636,7 @@ case "updatelayanan" : {
       if (isBanned) return m.reply(`*You Have Been Banned*`)
       let depo = text.split("|")[0]
       let catatnya = text.split("|")[1]
-      if (!catatnya) return m.reply(`*Harap Isi Nominal Dan Catatan*`)
+      if (!catatnya) return m.reply(`*_Harap Isi Nominal Dan Catatan_*`)
       let depos = `${formatmoney(depo)}`
       if (depo < minimaldepo) return m.reply(`*_Minimal Deposit Adalah ${minimaldepo}!. Silahkan Ulangi Transaksi_*`)
       if (isNaN(parseInt(depo))) return m.reply('Deposit Harus Berupa Angka!')
@@ -1642,7 +1712,7 @@ case "updatelayanan" : {
           client.sendMessage(`${text}`, {text: `*_Buy Limit Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
       }
       break;
-      case "creditreseller" : {
+      case "cekvip" : {
         if (!isCreator) return m.reply(mess.owner)
         let md5 = require('md5')
         let sign = md5(reseleridkey + reselerkey)
@@ -1658,7 +1728,7 @@ case "updatelayanan" : {
       })
     }
     break;
-    case "creditatlantic" : {
+    case "cekatc" : {
       if (!isCreator) return m.reply(mess.owner)
       let axios = require('axios')
           axios('https://atlantic-pedia.co.id/api/profile',{
@@ -1676,7 +1746,7 @@ case "updatelayanan" : {
             })
           }
       break;
-      case "creditdigiflazz" : {
+      case "cekdigi" : {
         if (!isCreator) return m.reply(mess.owner)
         let md5 = require('md5')
         let fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
@@ -2002,7 +2072,65 @@ case "updatelayanan" : {
         })
       break;
       }
-      case 'restart' :
+      case "topupdigi" : {
+        if (!isCreator) throw mess.owner
+        let skc = text.split("|")[0]
+        let ctn = text.split("|")[1]
+        if (!skc) return m.reply(`*_Harap Isi Sku Code_*`)
+        if (!ctn) return m.reply(`*_Harap Isi Sku Cust No_*`)
+        let refid = generateRandomString(10)
+        let data = {
+          username : usernamekey,
+          buyer_sku_code : skc,
+          customer_no : ctn,
+          ref_id : refid,
+          sign : md5(usernamekey + productionkey + refid),
+        }
+        fetch('https://api.digiflazz.com/v1/transaction', {
+          method : 'POST',
+          body : JSON.stringify(data),
+          header : {
+            'Content-Type': 'application/json'
+          }
+        }).then ((response) => response.json())
+        .then ((res) => {
+          pesan = `*── 「 TRANSAKSI BERHASIL 」 ──*\n\n_📌 Nomor Tujuan : ${res.data.customer_no}_\n_📌 Status : ${res.data.status}_\n_📌 Message : ${res.data.message}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Waktu : ${waktuserver}_\n_📌 Tanggal : ${tanggalserver}_\n\n_*Terimakasih ${pushname}🥰*_`
+          let buttons = [
+          { buttonId: prefix+`cektransaksi ${refid}|${skc}|${ctn}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+        ]
+        client.sendButtonText(from, buttons, `${pesan}`, `${packname}`, m)
+        })
+      }
+      break;
+      case "cektransaksi": {
+        if (!isCreator) throw mess.owner
+        let refid = text.split("|")[0]
+        let skc = text.split("|")[1]
+        let ctn = text.split("|")[2]
+        let data = {
+          username : usernamekey,
+          buyer_sku_code : skc,
+          customer_no : ctn,
+          ref_id : refid,
+          sign : md5(usernamekey + productionkey + refid),
+        }
+        fetch('https://api.digiflazz.com/v1/transaction', {
+          method : 'POST',
+          body : JSON.stringify(data),
+          header : {
+            'Content-Type': 'application/json'
+          }
+        }).then ((response) => response.json())
+        .then ((res) => {
+          pesan = `*── 「 STATUS TRANSAKSI 」 ──*\n\n_📌 Nomor Tujuan : ${res.data.customer_no}_\n_📌 Status : ${res.data.status}_\n_📌 Message : ${res.data.message}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Waktu : ${waktuserver}_\n_📌 Tanggal : ${tanggalserver}_\n\n_*Terimakasih Telah Bertransaksi ${pushname}🥰*_`
+          let buttons = [
+            { buttonId: prefix+`cektransaksi ${refid}|${skc}|${ctn}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+          ]
+          client.sendButtonText(from, buttons, `${pesan}`, `${packname}`, m)     
+        })
+      }
+      break;
+      case 'restart' : {
       if (!isCreator) return m.reply(mess.owner)
       await m.reply(`_Restarting ${packname}_`)
       try{
@@ -2014,6 +2142,7 @@ case "updatelayanan" : {
         await sleep(4000)
         m.reply('*_Sukses_*')
       }
+    }
       break;
       case 'whoisip': {
         if (isBanned) return m.reply(`*You Have Been Banned*`)
@@ -2171,13 +2300,8 @@ let teks = `══✪〘 *👥 Tag All* 〙✪══
            break;
            case 'getip': {
             if (!isCreator) throw mess.owner
-            var http = require('http')
-            http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-              resp.on('data', function(ip) {
-                m.reply("My public IP address is: " + ip);
-              })
-            })
-          }
+                m.reply("My public IP address is: " + ipserver);
+              }
           break;
           case 'ping': case 'botstatus': case 'statusbot': {
             if (!isCreator) throw mess.owner

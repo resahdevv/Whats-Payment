@@ -13,7 +13,7 @@ require('./setting/mechaine')
 const donet = "https://saweria.co/rezadevv";
 const {
   default: EzaConnect,
-  useSingleFileAuthState,
+  useMultiFileAuthState,
   DisconnectReason,
   fetchLatestBaileysVersion,
   generateForwardMessageContent,
@@ -26,7 +26,6 @@ const {
   proto,
   getContentType,
 } = require("@adiwajshing/baileys");
-const { state, saveState } = useSingleFileAuthState(`./${session}.json`);
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
@@ -214,6 +213,7 @@ function smsg(conn, m, store) {
 }
 
 async function startEza() {
+  const { state, saveCreds } = await useMultiFileAuthState(`./${session}`)
   const { version, isLatest } = await fetchLatestBaileysVersion();
   console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
   console.log(
@@ -377,10 +377,30 @@ async function startEza() {
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
     browser: ["Whats Pay", "Chrome", "1.0.0"],
-    auth: state,
-  });
-
-  store.bind(client.ev);
+    patchMessageBeforeSending: (message) => {
+      const requiresPatch = !!(
+        message.buttonsMessage
+        || message.templateMessage
+        || message.listMessage
+        );
+        if (requiresPatch) {
+          message = {
+            viewOnceMessage: {
+              message: {
+                messageContextInfo: {
+                  deviceListMetadataVersion: 2,
+                  deviceListMetadata: {},
+                },
+                ...message,
+              },
+            },
+          };
+        }
+        return message;
+      },
+      auth: state,
+    });
+    store.bind(client.ev);
 
   client.ev.on("messages.upsert", async (chatUpdate) => {
     //console.log(JSON.stringify(chatUpdate, undefined, 2))
@@ -622,7 +642,7 @@ async function startEza() {
         process.exit();
       } else if (reason === DisconnectReason.loggedOut) {
         console.log(
-          `Device Logged Out, Please Delete Session file ${session}.json and Scan Again.`
+          `Device Logged Out, Please Delete Session folder ${session} and Scan Again.`
         );
         process.exit();
       } else if (reason === DisconnectReason.restartRequired) {
@@ -646,7 +666,7 @@ async function startEza() {
     // console.log('Connected...', update)
   });
 
-  client.ev.on("creds.update", saveState);
+  client.ev.on("creds.update", saveCreds);
 
   client.downloadMediaMessage = async (message) => {
     let mime = (message.msg || message).mimetype || "";
