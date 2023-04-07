@@ -367,20 +367,22 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
 
     // Start Money
     const addMonUser = (sender, amount) => {
-      let position = false
+      let position = false;
       Object.keys(money).forEach((i) => {
         if (money[i].id === sender) {
-          position = i
+          position = i;
         }
-      })
+      });
       if (position === false) {
         console.log(`Sender ID ${sender} not found in balance list`);
-        return false; // return false to indicate that sender ID was not found
+        return false;
+      } else if (position !== false) {
+        money[position].money += amount;
+        fs.writeFileSync('./src/balance.json', JSON.stringify(money));
+        return true;
       }
-      money[position].money += amount
-      fs.writeFileSync('./src/balance.json', JSON.stringify(money))
-      return true; // return true to indicate that sender ID was found and balance was updated
     }
+    
     
     const moneyAdd = (sender, amount) => {
       let position = false
@@ -419,17 +421,18 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
         if (limit[i].id === sender) {
           position = i;
         }
-      });
+      })
       if (position === false) {
         console.log(`Sender ID ${sender} not found in limit list`);
-        return false; // return false to indicate that sender ID was not found
+        return false;
+      } else if (position !== false) {
+        limit[position].limit += amount
+        fs.writeFileSync('./src/limit.json', JSON.stringify(limit))
+        return true;
       }
-      limit[position].limit += amount;
-      fs.writeFileSync('./src/limit.json', JSON.stringify(limit));
-      return true; // return true to indicate that sender ID was found and limit was updated
-    };
+    }
     
-    
+
     const limitAdd = (sender, amount) => {
       let position = false
       Object.keys(limit).forEach((i) => {
@@ -444,13 +447,13 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
     }
     const getLimUser = (sender) => {
         let fiendh = false
-      for (let potonlmt of limit) {
-        if (potonlmt.id === sender) {
-           global.userPoton = potonlmt.limit
-          fiendh = true
-          return global.userPoton
+        for (let potonlmt of limit) {
+          if (potonlmt.id === sender) {
+            global.userPoton = potonlmt.limit
+            fiendh = true
+            return global.userPoton
+          }
         }
-      }
       //function adven
       if (fiendh === false) {
         let obj = { id: sender, limit: 0 }
@@ -1030,6 +1033,7 @@ list = []
     }
     break;
     case "listgame" : {
+      if (isGroup) throw mess.private
       let provv  = [ {'id':'Arena Of Valor'},
       {'id':'AU2 Mobile'},
       {'id':'Boyaa Capsa Susun'},
@@ -1578,7 +1582,7 @@ case "updatelayanan" : {
       if (!nomor) return m.reply(`*_Harap Isi Nominal Dan Tujuan_*`)
       if (isNaN(parseInt(saldo))) return m.reply('Saldo Harus Berupa Angka!')
       if (saldo < '10') return m.reply('*_Minimal Mengirim Saldo 10!_*')
-      if (!addMonUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim saldo. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar saldo_*`);
+      if (!addMonUser(nomor + '@s.whatsapp.net', 0)) return m.reply(`*_Gagal mengirim saldo. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar saldo_*`);
       if (getMonUser(sender) < saldo) return m.reply('*_Saldo Anda Kurang Untuk Melakukan Transfer_*')
       if (getMonUser(sender) > saldo) {
         moneyAdd(m.sender, saldo)
@@ -1600,7 +1604,7 @@ case "updatelayanan" : {
       if (!nomor) return m.reply(`*_Harap Isi Limit Dan Tujuan_*`)
       if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
       if (limit < '5') return m.reply('*_Minimal Kirim Limit 5!_*')
-      if (!addLimUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim limit. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar limit_*`);
+      if (!addLimUser(nomor + '@s.whatsapp.net', 0)) return m.reply(`*_Gagal mengirim limit. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar limit_*`);
       if (getLimUser(sender) < limit) return m.reply('*_Limit Anda Kurang Untuk Melakukan Transfer_*')
       if (getLimUser(sender) > limit) {
         limitAdd(m.sender, limit)
@@ -1624,7 +1628,7 @@ case "updatelayanan" : {
       if (!nomor) return m.reply(`*_Harap Isi Nominal Dan Tujuan_*`)
       if (isNaN(parseInt(saldo))) return m.reply('Deposit Harus Berupa Angka!')
       if (saldo < '10') return m.reply('*_Minimal Saldo 10!_*')
-      if (!addMonUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim saldo. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar saldo_*`);
+      if (!addMonUser(nomor + '@s.whatsapp.net', 0)) return m.reply(`*_Gagal mengirim saldo. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar saldo_*`);
       addMonUser(nomor + `@s.whatsapp.net`, saldo)
       let psn = `*_Anda Telah Mendapatkan Tambahan Saldo Sebesar : ${formatmoney(saldo)}_*`
       let buttons  = [
@@ -1643,7 +1647,7 @@ case "updatelayanan" : {
       if (!nomor) return m.reply(`*_Harap Isi Limit Dan Tujuan_*`)
       if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
       if (limit < '5') return m.reply('*_Minimal Limit 5!_*')
-      if (!addLimUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim limit. ID penerima ${nomor} tidak ditemukan di dalam daftar limit_*`);
+      if (!addLimUser(nomor + '@s.whatsapp.net', 0)) return m.reply(`*_Gagal mengirim limit. ID penerima ${nomor} tidak ditemukan di dalam daftar limit_*`);
       addLimUser(nomor + `@s.whatsapp.net`, limit)
       let psn = `*_Anda Telah Mendapatkan Tambahan Limit Sebesar : ${formatmoney(limit)}_*`
       let buttons  = [
