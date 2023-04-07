@@ -18,6 +18,7 @@ const { sizeFormatter } = require('human-readable');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
 const moment = require('moment-timezone');
 const md5 = require('md5');
+const { set } = require('lodash');
 // end
 
 //code by rezadevv
@@ -372,10 +373,13 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
           position = i
         }
       })
-      if (position !== false) {
-        money[position].money += amount
-        fs.writeFileSync('./src/balance.json', JSON.stringify(money))
+      if (position === false) {
+        console.log(`Sender ID ${sender} not found in balance list`);
+        return false; // return false to indicate that sender ID was not found
       }
+      money[position].money += amount
+      fs.writeFileSync('./src/balance.json', JSON.stringify(money))
+      return true; // return true to indicate that sender ID was found and balance was updated
     }
     
     const moneyAdd = (sender, amount) => {
@@ -410,17 +414,21 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
 
     // Start Limt Trx
     const addLimUser = (sender, amount) => {
-      let position = false
+      let position = false;
       Object.keys(limit).forEach((i) => {
         if (limit[i].id === sender) {
-          position = i
+          position = i;
         }
-      })
-      if (position !== false) {
-        limit[position].limit += amount
-        fs.writeFileSync('./src/limit.json', JSON.stringify(limit))
+      });
+      if (position === false) {
+        console.log(`Sender ID ${sender} not found in limit list`);
+        return false; // return false to indicate that sender ID was not found
       }
-    }
+      limit[position].limit += amount;
+      fs.writeFileSync('./src/limit.json', JSON.stringify(limit));
+      return true; // return true to indicate that sender ID was found and limit was updated
+    };
+    
     
     const limitAdd = (sender, amount) => {
       let position = false
@@ -1561,7 +1569,7 @@ case "updatelayanan" : {
       let buttons = [
         {buttonId: prefix + `ownermenu`, buttonText: { displayText: 'Dashboard Admin' }, type: 1}
       ]
-      client.sendButtonText(m.sender, buttons, pesan, packname, m) 
+      client.sendButtonText(from, buttons, pesan, packname, m) 
     }
     break;
     case "kirimsaldo" : {
@@ -1569,6 +1577,8 @@ case "updatelayanan" : {
       let nomor = text.split("|")[1]
       if (!nomor) return m.reply(`*_Harap Isi Nominal Dan Tujuan_*`)
       if (isNaN(parseInt(saldo))) return m.reply('Saldo Harus Berupa Angka!')
+      if (saldo < '10') return m.reply('*_Minimal Mengirim Saldo 10!_*')
+      if (!addMonUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim saldo. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar saldo_*`);
       if (getMonUser(sender) < saldo) return m.reply('*_Saldo Anda Kurang Untuk Melakukan Transfer_*')
       if (getMonUser(sender) > saldo) {
         moneyAdd(m.sender, saldo)
@@ -1577,8 +1587,10 @@ case "updatelayanan" : {
         let buttons = [
           {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
         ]
-        client.sendButtonText(nomor.replace('08','628') + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
-        m.reply(`*_Sukses Mengirim Saldo Ke ${nomor.replace('08','628')}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Saldo Telah Terkirim Ke Nomor Tujuan_*`)
+        client.sendButtonText(nomor.replace('08','628') + `@s.whatsapp.net`, buttons, psn, packname, m)
+        setTimeout(() => {
+          m.reply(`*_Sukses Mengirim Saldo Ke ${nomor.replace('08','628')}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Saldo Telah Terkirim Ke Nomor Tujuan_*`)
+        }, 3000) // delay of 3 second
       }
     }
     break;
@@ -1587,6 +1599,8 @@ case "updatelayanan" : {
       let nomor = text.split("|")[1]
       if (!nomor) return m.reply(`*_Harap Isi Limit Dan Tujuan_*`)
       if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
+      if (limit < '5') return m.reply('*_Minimal Kirim Limit 5!_*')
+      if (!addLimUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim limit. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar limit_*`);
       if (getLimUser(sender) < limit) return m.reply('*_Limit Anda Kurang Untuk Melakukan Transfer_*')
       if (getLimUser(sender) > limit) {
         limitAdd(m.sender, limit)
@@ -1595,8 +1609,10 @@ case "updatelayanan" : {
         let buttons = [
           {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
         ]
-        client.sendButtonText(nomor.replace('08','628') + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
-        m.reply(`*_Sukses Mengirim Limit Ke ${nomor.replace('08','628')}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Limit Telah Terkirim Ke Nomor Tujuan_*`)
+        client.sendButtonText(nomor.replace('08','628') + `@s.whatsapp.net`, buttons, psn, packname, m)
+        setTimeout(() => {
+          m.reply(`*_Sukses Mengirim Limit Ke ${nomor.replace('08','628')}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Limit Telah Terkirim Ke Nomor Tujuan_*`)
+        }, 3000) // delay of 3 seconds
       }
     }
 
@@ -1607,13 +1623,17 @@ case "updatelayanan" : {
       let nomor = text.split("|")[1]
       if (!nomor) return m.reply(`*_Harap Isi Nominal Dan Tujuan_*`)
       if (isNaN(parseInt(saldo))) return m.reply('Deposit Harus Berupa Angka!')
+      if (saldo < '10') return m.reply('*_Minimal Saldo 10!_*')
+      if (!addMonUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim saldo. ID penerima ${nomor.replace('08','628')} tidak ditemukan di dalam daftar saldo_*`);
       addMonUser(nomor + `@s.whatsapp.net`, saldo)
       let psn = `*_Anda Telah Mendapatkan Tambahan Saldo Sebesar : ${formatmoney(saldo)}_*`
       let buttons  = [
         {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
       ]
-      client.sendButtonText(nomor + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
-      m.reply(`*_Sukses Menambah Saldo ${nomor}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Anda Telah Mengirim Saldo Secara Manual Saldo Telah Di Tambahkan!._*`)
+      client.sendButtonText(nomor + `@s.whatsapp.net`, buttons, psn, packname, m)
+      setTimeout(() => {
+        m.reply(`*_Sukses Menambah Saldo ${nomor}_*\n*_Nominal : ${formatmoney(saldo)}_*\n\n*_Anda Telah Mengirim Saldo Secara Manual Saldo Telah Di Tambahkan!._*`)
+      }, 3000) // delay of 3 second
     }
     break;
     case "addlimit" : {
@@ -1622,16 +1642,20 @@ case "updatelayanan" : {
       let nomor = text.split("|")[1]
       if (!nomor) return m.reply(`*_Harap Isi Limit Dan Tujuan_*`)
       if (isNaN(parseInt(limit))) return m.reply('Limit Harus Berupa Angka!')
+      if (limit < '5') return m.reply('*_Minimal Limit 5!_*')
+      if (!addLimUser(nomor + '@s.whatsapp.net', limit)) return m.reply(`*_Gagal mengirim limit. ID penerima ${nomor} tidak ditemukan di dalam daftar limit_*`);
       addLimUser(nomor + `@s.whatsapp.net`, limit)
       let psn = `*_Anda Telah Mendapatkan Tambahan Limit Sebesar : ${formatmoney(limit)}_*`
       let buttons  = [
         {buttonId: prefix + `menu`, buttonText: { displayText: 'OK'}, type: 1}
       ]
-      client.sendButtonText(nomor + `@s.whatsapp.net`, buttons, `${psn}`, `${packname}`, m)
-      m.reply(`*_Sukses Menambah Limit ${nomor}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Anda Telah Mengirim Limit Secara Manual Limit Telah Di Tambahkan!._*`)
+      client.sendButtonText(nomor + `@s.whatsapp.net`, buttons, psn, packname, m)
+      setTimeout(() => {
+        m.reply(`*_Sukses Menambah Limit ${nomor}_*\n*_Limit : ${formatmoney(limit)}_*\n\n*_Anda Telah Mengirim Limit Secara Manual Limit Telah Di Tambahkan!._*`)
+      }, 3000) // delay of 3 second
     }
     break;
-    // Start Bukti
+    // Start Bukti Pembayaran
     case "bukti" : {
       if (isBanned) return m.reply(`*You Have Been Banned*`)
       let depo = text.split("|")[0]
@@ -1671,7 +1695,7 @@ case "updatelayanan" : {
           client.sendMessage(`${text}`, {text: `*_Topup Anda Ditolak!, Mungkin Anda Melakukan Fake Topup Atau Kekeliruan Lain, Silahkan Chat Owner Jika Ada Masalah!._*` })
         }
         break;
-        // End Bukti
+        // End Bukti Pembayaran
       // Start Buy limit
       case "buylimit" : {
       if (isBanned) return m.reply(`*You Have Been Banned*`)
@@ -2072,7 +2096,7 @@ case "updatelayanan" : {
         })
       break;
       }
-      case "topupdigi" : {
+      case "topupdigi" : case "digi" : case "alltopup" : {
         if (!isCreator) throw mess.owner
         let skc = text.split("|")[0]
         let ctn = text.split("|")[1]
