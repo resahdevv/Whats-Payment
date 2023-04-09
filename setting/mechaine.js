@@ -2560,32 +2560,48 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
     let msg = await client.sendMessage(m.chat, buttonMessage, { quoted: m })
     client.sendMessage(m.chat, { audio: { url: anu.result.music.play_url }, mimetype: 'audio/mpeg'}, { quoted: msg })
 }
-        break;
-          case 'ban':
-        if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
-		    if (!isCreator) throw mess.owner
-		    bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
-        ban.push(bnnd)
-		    fs.writeFileSync('./src/banned.json', JSON.stringify(ban))
-		    m.reply(`${bnnd}`)
-        break;
-        case 'unban':
-        if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
-		    if (!isCreator) throw mess.owner
-		    bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
-        unp = ban.indexOf(bnnd)
-        ban.splice(unp, 1)
-		    fs.writeFileSync('./src/banned.json', JSON.stringify(ban))
-		    m.reply(`${bnnd}`)
-        break;
-        case 'listban': case 'lisbanned':
-          if (!isCreator) throw mess.owner
-          teks = '*List Banned*\n\n'
-          for (let medog of ban) {
-            teks += `- ${medog}\n`
-          }
-          teks += `\n*Total Banned : ${ban.length}*`
-          client.sendMessage(m.chat, { text: teks.trim() }, 'extendedTextMessage', { quoted: m, contextInfo: { "mentionedJid": ban } })
+break;
+case 'ban' : {
+  if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
+  if (!isCreator) throw mess.owner
+  let bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
+  let ban = []
+  if (fs.existsSync('./src/banned.json')) {
+    ban = JSON.parse(fs.readFileSync('./src/banned.json'))
+  }
+  if (ban.includes(bnnd)) {
+    m.reply('*_Nomor Telah Terbanned_*')
+  } else {
+    ban.push(bnnd)
+    fs.writeFileSync('./src/banned.json', JSON.stringify(ban))
+    m.reply(bnnd)
+  }
+}
+break;
+case 'unban' : {
+  if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
+  if (!isCreator) throw mess.owner
+  let bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
+  let ban = JSON.parse(fs.readFileSync('./src/banned.json'))
+  let unp = ban.indexOf(bnnd)
+  if (unp !== -1) {
+    ban.splice(unp, 1)
+    fs.writeFileSync('./src/banned.json', JSON.stringify(ban))
+    m.reply(bnnd)
+  } else {
+    m.reply('*_Nomor Tidak Ditemukan_*')
+  }
+}
+break;
+case 'listban': case 'lisbanned': {
+  if (!isCreator) throw mess.owner
+  teks = '*List Banned*\n\n'
+  for (let medog of ban) {
+    teks += `- ${medog}\n`
+  }
+  teks += `\n*Total Banned : ${ban.length}*`
+  client.sendMessage(m.chat, { text: teks.trim() }, 'extendedTextMessage', { quoted: m, contextInfo: { "mentionedJid": ban } })
+}
         break;
           default: {
           if (isCmd2 && budy.toLowerCase() != undefined) {
