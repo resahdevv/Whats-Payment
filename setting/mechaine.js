@@ -1178,12 +1178,20 @@ case "konfirmasipulsa" : {
   if(!fs.existsSync(`./src/depo/${sender}1.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian Pulsa Kembali_*')
   let hrg = text.split("|")[2]
   if (getLimUser(sender) < limitrate) {
-    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
-    fs.unlinkSync(`./src/depo/${sender}1.json`)
+    if (fs.existsSync(`./src/depo/${sender}1.json`)) {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+      fs.unlinkSync(`./src/depo/${sender}1.json`)
+    } else {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    }
   }
   if (getMonUser(sender) < hrg) {
-    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
-    fs.unlinkSync(`./src/depo/${sender}1.json`)
+    if (fs.existsSync(`./src/depo/${sender}1.json`)) {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+      fs.unlinkSync(`./src/depo/${sender}1.json`)
+    } else {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    }
   }
   if (getLimUser(sender) > limitrate) {
   if (getMonUser(sender) > hrg) {
@@ -1203,12 +1211,20 @@ case "konfirmasikuota" : {
   if(!fs.existsSync(`./src/depo/${sender}4.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian Kuota Kembali_*')
   let hrg = text.split("|")[2]
   if (getLimUser(sender) < limitrate) {
-    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
-    fs.unlinkSync(`./src/depo/${sender}4.json`)
+    if (fs.existsSync(`./src/depo/${sender}4.json`)) {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+      fs.unlinkSync(`./src/depo/${sender}4.json`)
+    } else {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    }
   }
   if (getMonUser(sender) < hrg) {
-    m.reply('*_Saldo User Anda Kurang!. Silahkan Melakukan Deposit Terlebih Dahulu_*')
-    fs.unlinkSync(`./src/depo/${sender}4.json`)
+    if (fs.existsSync(`./src/depo/${sender}4.json`)) {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Melakukan Deposit Terlebih Dahulu_*')
+      fs.unlinkSync(`./src/depo/${sender}4.json`)
+    } else {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Melakukan Deposit Terlebih Dahulu_*')
+    }
   }
   if (getLimUser(sender) > limitrate) {
     if (getMonUser(sender) > hrg) {
@@ -1256,13 +1272,21 @@ case "konfirmasipln" : {
   if(!fs.existsSync(`./src/depo/${sender}3.json`)) return reply('*_Expired: Silahkan Lakukan Pembelian Token Listrik Kembali_*')
   let hrg = text.split("|")[2]
   if (getLimUser(sender) < limitrate) {
-    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
-    fs.unlinkSync(`./src/depo/${sender}3.json`)
+    if (fs.existsSync('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')) {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+      fs.unlinkSync(`./src/depo/${sender}3.json`)
+    } else {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    }
   }
   if (getMonUser(sender) < hrg) {
+    if (fs.existsSync('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')) {
     m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
     fs.unlinkSync(`./src/depo/${sender}3.json`)
+  } else {
+    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
   }
+}
   if (getLimUser(sender) > limitrate) {
   if (getMonUser(sender) > hrg) {
     let nomr = text.split("|")[0]
@@ -1357,13 +1381,21 @@ case "konfirmasiemoneyfix" : {
   if(!fs.existsSync(`./src/depo/${sender}2.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
   let hrg = text.split("|")[2]
   if (getLimUser(sender) < limitrate) {
+    if (fs.existsSync(`./src/depo/${sender}2.json`)) {
     m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
-    fs.unlinkSync(`./src/depo/${sender}2.json`)
+    fs.unlinkSync(`./src/depo/${sender}2.json`) 
+    } else {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+    }
   }
   if (getMonUser(sender) < hrg) {
+    if (fs.existsSync(`./src/depo/${sender}2.json`)) {
     m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
     fs.unlinkSync(`./src/depo/${sender}2.json`)
+  } else {
+    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
   }
+}
   if (getLimUser(sender) > limitrate) {
   if (getMonUser(sender) > hrg) {
     let nomr = text.split("|")[0]
@@ -1415,12 +1447,20 @@ case "konfirmasigame" : {
   if(!fs.existsSync(`./src/depo/${sender}7.json`)) return m.reply('*_Expired: Silahkan Lakukan Pembelian E-Money Kembali_*')
   let hrg = text.split("|")[2]
   if (getLimUser(sender) < limitrate) {
-    m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
-    fs.unlinkSync(`./src/depo/${sender}7.json`)
+    if (fs.existsSync(`./src/depo/${sender}7.json`)) {
+      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+      fs.unlinkSync(`./src/depo/${sender}7.json`)
+    } else {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    }
   }
   if (getMonUser(sender) < hrg) {
-    m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
-    fs.unlinkSync(`./src/depo/${sender}7.json`)
+    if (fs.existsSync(`./src/depo/${sender}7.json`)) {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+      fs.unlinkSync(`./src/depo/${sender}7.json`)
+    } else {
+      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+    }
   }
   if (getLimUser(sender) > limitrate) {
   if (getMonUser(sender) > hrg) {
@@ -1463,12 +1503,20 @@ case "konfirmasiidonly" : {
   if(sender == sndr.sender){
     let hrg = text.split("|")[2]
     if (getLimUser(sender) < limitrate) {
-      m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
-      fs.unlinkSync(`./src/depo/${sender}6.json`)
+      if (fs.existsSync(`./src/depo/${sender}6.json`)) {
+        m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+        fs.unlinkSync(`./src/depo/${sender}6.json`)
+      } else {
+        m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+      }
     }
     if (getMonUser(sender) < hrg) {
-      m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
-      fs.unlinkSync(`./src/depo/${sender}6.json`)
+      if (fs.existsSync(`./src/depo/${sender}6.json`)) {
+        m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+        fs.unlinkSync(`./src/depo/${sender}6.json`)
+      } else {
+        m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+      }
     }
     if (getLimUser(sender) > limitrate) {
     if (getMonUser(sender) > hrg) {
