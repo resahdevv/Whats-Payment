@@ -1573,7 +1573,7 @@ case "cekatlantic" : {
       })
     }
 break;
-case "listuser" :
+case "listuser" : {
   if (!isCreator) throw mess.owner
   teks = '*_List User :)_*\n\n'
   for (let pengguna of signup) {
@@ -1581,6 +1581,7 @@ case "listuser" :
   }
   teks += `\n*_Total User : ${signup.length}_*`
   client.sendMessage(m.chat, { text: teks.trim() }, 'extendedTextMessage', { quoted: m, contextInfo: { "mentionedJid": signup } })
+}
 break;
 case "cek" : {
   pulsabuy({
@@ -2565,11 +2566,11 @@ case 'ban' : {
   if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
   if (!isCreator) throw mess.owner
   let bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
-  let ban = []
+  let ban_ = []
   if (fs.existsSync('./src/banned.json')) {
-    ban = JSON.parse(fs.readFileSync('./src/banned.json'))
+    ban_ = JSON.parse(fs.readFileSync('./src/banned.json'))
   }
-  if (ban.includes(bnnd)) {
+  if (ban_.includes(bnnd)) {
     m.reply('*_Nomor Telah Terbanned_*')
   } else {
     ban.push(bnnd)
@@ -2582,8 +2583,8 @@ case 'unban' : {
   if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
   if (!isCreator) throw mess.owner
   let bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
-  let ban = JSON.parse(fs.readFileSync('./src/banned.json'))
-  let unp = ban.indexOf(bnnd)
+  let ban_ = JSON.parse(fs.readFileSync('./src/banned.json'))
+  let unp = ban_.indexOf(bnnd)
   if (unp !== -1) {
     ban.splice(unp, 1)
     fs.writeFileSync('./src/banned.json', JSON.stringify(ban))
