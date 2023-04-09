@@ -1569,7 +1569,7 @@ case "updatelayanan" : {
     break;
     case "caradigi" : {
       if (!isCreator) return m.reply (mess.owner)
-      let pesan = `*─ 「 CARA TRX DIGI 」 ─*\n*_Berikut Adalah Cara Transaksi Menggunakan Provider Digifalzz_*\n\n_Transaksi Ini Hanya Bisa Di Lakukan Oleh Owner Saja_\n_Untuk Melakukan Transaksi Menggunakan Digiflazz Hanya PerluMengetikan :_\n\n_Contoh :_\n_${prefix}topupdigi BUYER_SKU_CODE|CUTOMER_NO_\n\n_Maka :_\n_${prefix}topupdigi DANA10|085742632270_\n\n*_Begitulah Cara Melakukan Transaksi Menggunakan Provider Digiflazz Melalui Whats Payment_*`
+      let pesan = `*─ 「 CARA TRX DIGI 」 ─*\n*_Berikut Adalah Cara Transaksi Menggunakan Provider Digifalzz_*\n\n_Transaksi Ini Hanya Bisa Di Lakukan Oleh Owner Saja_\n\n_Untuk Melakukan Transaksi Menggunakan Digiflazz Hanya Perlu Mengetikan :_\n\n_Contoh :_\n_${prefix}topupdigi BUYER_SKU_CODE|CUTOMER_NO_\n\n_Maka :_\n_${prefix}topupdigi DANA10|085742632270_\n\n*_Begitulah Cara Melakukan Transaksi Menggunakan Provider Digiflazz Melalui Whats Payment_*`
       let buttons = [
         {buttonId: prefix + `ownermenu`, buttonText: { displayText: 'Dashboard Admin' }, type: 1}
       ]
