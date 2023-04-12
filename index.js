@@ -9,8 +9,6 @@ require("http")
   .listen(0000);
 
 require('./setting/config')
-require('./setting/mechaine')
-const donet = "https://saweria.co/rezadevv";
 const {
   default: EzaConnect,
   useMultiFileAuthState,
@@ -636,14 +634,10 @@ async function startEza() {
         console.log("Connection Lost from Server, reconnecting...");
         startEza();
       } else if (reason === DisconnectReason.connectionReplaced) {
-        console.log(
-          "Connection Replaced, Another New Session Opened, Please Close Current Session First"
-        );
+        console.log("Connection Replaced, Another New Session Opened, Please Close Current Session First");
         process.exit();
       } else if (reason === DisconnectReason.loggedOut) {
-        console.log(
-          `Device Logged Out, Please Delete Session folder ${session} and Scan Again.`
-        );
+        console.log(`Device Logged Out, Please Delete Session folder ${session} and Scan Again.`);
         process.exit();
       } else if (reason === DisconnectReason.restartRequired) {
         console.log("Restart Required, Restarting...");
