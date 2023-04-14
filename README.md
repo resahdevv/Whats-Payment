@@ -38,7 +38,7 @@
 <br>📍 .addowner 6285xxxxxxxxx
 <br>📍 .delowner 6285xxxxxxxxx
 
-Untuk melihat ownermenu dapat menggunakan perintah ```.owner```
+Untuk melihat ownermenu dapat menggunakan perintah ```.ownermenu```
 
 ## Catatan
 > **Warning**: Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi MIT yang artinya perangkat lunak bebas permisif yang berasal dari Massachusetts Institute of Technology. Sebagai lisensi permisif, Lisensi MIT memberikan batasan yang sangat longgar tentang penggunaan kembali dan memiliki kompatibilitas lisensi yang sangat baik.
