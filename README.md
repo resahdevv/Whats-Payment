@@ -3,17 +3,45 @@
 ***Whats Payment dibuat dengan nodejs menggunakan library [Bailyes](https://github.com/adiwajshing/Baileys)***
 
 ## Baca Dulu Mas Mba
-Terdapat 6 feature transaksi 
+***List Menu***
 
-<br>📍 .depomanual
+<br>📍 .kirimsaldo 1000|6285xxxxxxxxx
+<br>📍 .kirimsaldo 5|6285xxxxxxxxx
 <br>📍 .topup (sultan)
 <br>📍 .listgame
+<br>📍 .caradevo
 <br>📍 .pulsamenu
-<br>📍 .emoneymenu
 <br>📍 .plnmenu
+<br>📍 .emoneymenu
+<br>📍 .owner
+<br>
+<br>
+<br>── 「 PASCABAYAR 」 ──
+<br>📍 .tagihanpln [coming soon]
+<br>📍 .tagihanbpjs [coming soon]
+<br>📍 .tagihanpdam [coming soon]
+
+***Owner Menu***
+
+<br>📍 .caradigi (owner only)
+<br>📍 .addmoney 1000|62857xxxxxxxx
+<br>📍 .addlimit 100|62857xxxxxxxx
+<br>📍 .updatelayanan
+<br>📍 .cekatc (balance)
+<br>📍 .cekvip (balance)
+<br>📍 .cekdigi (balance)
+<br>📍 .listban
+<br>📍 .listuser
+<br>📍 .listowner
+<br>📍 .ban 6285xxxxxxxxx
+<br>📍 .unban 6285xxxxxxxxx
+<br>📍 .addowner 6285xxxxxxxxx
+<br>📍 .delowner 6285xxxxxxxxx
+
+Untuk melihat ownermenu dapat menggunakan perintah ```.owner```
 
 ## Catatan
-Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi MIT yang artinya perangkat lunak bebas permisif yang berasal dari Massachusetts Institute of Technology. Sebagai lisensi permisif, Lisensi MIT memberikan batasan yang sangat longgar tentang penggunaan kembali dan memiliki kompatibilitas lisensi yang sangat baik.
+> **Warning**: Kode Sumber Dibuat Oleh @RezaDevv Program Ini Memiliki Lisensi MIT yang artinya perangkat lunak bebas permisif yang berasal dari Massachusetts Institute of Technology. Sebagai lisensi permisif, Lisensi MIT memberikan batasan yang sangat longgar tentang penggunaan kembali dan memiliki kompatibilitas lisensi yang sangat baik.
 
 <p align="center">
 	<img src="https://telegra.ph/file/4be1496d02b3d2ce1f03b.png" width="35%" style="margin-left: auto;margin-right: auto;display: block;">

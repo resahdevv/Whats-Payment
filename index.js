@@ -38,6 +38,8 @@ const ff = require("fluent-ffmpeg");
 const webp = require("node-webpmux");
 const { tmpdir } = require("os");
 const Crypto = require("crypto");
+const { versions } = require("process");
+const owner = JSON.parse(fs.readFileSync('./src/owner.json'));
 
 const store = makeInMemoryStore({
   logger: pino().child({ level: "silent", stream: "store" }),
@@ -650,12 +652,30 @@ async function startEza() {
         startEza();
       }
     } else if (connection === "open") {
-      console.log(color(`Whats Payment success connected to ${ipserver}`, "green"));
-      console.log(color(`Whats Payment Version ${versionscript}`, "cyan"));
-      console.log(color("Ketik .menu untuk menampilkan menu"));
-      client.sendMessage(`${owner}@s.whatsapp.net`, {
-        text: `*_Hi Owner Whats Payment, Server Whats Payment Berhasil Aktif_*\n\n*_Detail Configurasi Server :_*\n_Owner : ${owner}_\n_Packname : ${packname}_\n_Author : ${author}_\n_Profit : ${profit}_\n_Session : ${session}_\n_IP Server : ${ipserver}_\n\n*_Tanggal Server : ${tanggalserver}_*\n*_Waktu Server : ${waktuserver}_*`,
-      });
+      console.log(color(`Whats Payment success connected to ${ipserver}`, "red"));
+      console.log(color(`Whats Payment Version ${versionscript}`, "green"));
+      console.log(color("Ketik .menu untuk menampilkan menu", "blue"));
+      console.log(color("Checking Version...", "yellow"))
+      if (versionscript !== "1.4.0") {
+        console.log(pesannya)
+      } else {
+        console.log(color("Ini Adalah Versi Terbaru", "cyan"))
+        let count = owner.length;
+        let sentCount = 0;
+        console.log(color("Sedang Mengirim Message Kepada Owner...", "yellow"))
+        for (let i = 0; i < owner.length; i++) {
+          setTimeout(function() {
+            client.sendMessage(owner[i] + '@s.whatsapp.net', {
+              text: `*_Hi Owner Whats Payment, Server Whats Payment Berhasil Aktif_*\n\n*_Detail Configurasi Server :_*\n_Packname : ${packname}_\n_Author : ${author}_\n_Profit : ${profit}_\n_Session : ${session}_\n_IP Server : ${ipserver}_\n\n*_Tanggal Server : ${tanggalserver}_*\n*_Waktu Server : ${waktuserver}_*`,
+            });
+            count--;
+            sentCount++;
+            if (count === 0) {
+              console.log(color("Semua Message Berhasil Di Kirim: " + sentCount, "green"))
+            }
+          }, i * 1000);
+        }
+      }
     }
     // console.log('Connected...', update)
   });

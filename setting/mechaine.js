@@ -25,6 +25,7 @@ const { set } = require('lodash');
 let money = JSON.parse(fs.readFileSync('./src/balance.json'))
 let limit = JSON.parse(fs.readFileSync('./src/limit.json'))
 let signup = JSON.parse(fs.readFileSync('./src/user.json'))
+const owner_database = JSON.parse(fs.readFileSync('./src/owner.json'))
 const ban = JSON.parse(fs.readFileSync('./src/banned.json'))
 const isBanned = JSON.parse(fs.readFileSync('./src/banned.json'))
 const PathAuto = "./src/depo/"
@@ -237,7 +238,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
     const args = body.trim().split(/ +/).slice(1);
     const pushname = m.pushName || "No Name";
     const botNumber = await client.decodeJid(client.user.id);
-    const isCreator = [botNumber, ...global.owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
+    const isCreator = [botNumber, ...JSON.parse(fs.readFileSync('./src/owner.json'))].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
     const isBanned = ban.includes(m.sender)    
     const itsMe = m.sender == botNumber ? true : false;
     let text = (q = args.join(" "));
@@ -895,12 +896,12 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       switch (command) {
         case "help": case "menu":
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
+            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n📍 ${prefix}owner\n\n*── 「 PASCABAYAR 」 ──*\n📍 ${prefix}tagihanpln [coming soon]\n📍 ${prefix}tagihanbpjs [coming soon]📍 ${prefix}tagihanpdam [coming soon]\n\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
             client.sendText(m.chat, anu, m)   
         break;
         case "ownermenu" :
         if (!isCreator) throw mess.owner
-        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}caradigi (owner only)\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}updatelayanan\n📍 ${prefix}cekatc (balance)\n📍 ${prefix}cekvip (balance)\n📍 ${prefix}cekdigi (balance)\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx`
+        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}caradigi (owner only)\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}updatelayanan\n📍 ${prefix}cekatc (balance)\n📍 ${prefix}cekvip (balance)\n📍 ${prefix}cekdigi (balance)\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}listowner\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx\n📍 ${prefix}addowner 6285xxxxxxxxx\n📍 ${prefix}delowner 6285xxxxxxxxx`
         client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
@@ -1583,6 +1584,16 @@ case "listuser" : {
   client.sendMessage(m.chat, { text: teks.trim() }, 'extendedTextMessage', { quoted: m, contextInfo: { "mentionedJid": signup } })
 }
 break;
+case "listowner" : {
+  if (!isCreator) throw mess.owner
+  teks = '*_List Owner 📌_*\n\n'
+  for (let yoi of owner_database) {
+    teks += `🌟 ${yoi}\n`
+  }
+  teks += `\n*_Total Owner : ${owner_database.length}_*`
+  client.sendMessage(m.chat, { text: teks.trim() }, 'extendedTextMessage', { quoted: m, contextInfo: { "mentionedJid": owner_database } })
+}
+break;
 case "cek" : {
   pulsabuy({
     type: 'cek',
@@ -1862,7 +1873,7 @@ case "updatelayanan" : {
         break;
         case 'owner': case 'creator': {
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-          client.sendContact(m.chat, global.owner, m)
+          client.sendContact(m.chat, JSON.parse(fs.readFileSync('./src/owner.json')), m)
         }
       break;
       case 'topupff': {
@@ -2562,10 +2573,42 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
     client.sendMessage(m.chat, { audio: { url: anu.result.music.play_url }, mimetype: 'audio/mpeg'}, { quoted: msg })
 }
 break;
+case 'addowner' : {
+  if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
+  if (!isCreator) throw mess.owner
+  let own = text.replace(/[^0-9]/g, '')
+  let own_ = []
+  if (fs.existsSync('./src/owner.json')) {
+    own_ = JSON.parse(fs.readFileSync('./src/owner.json'))
+  }
+  if (own_.includes(own)) {
+    m.reply('*_Nomor Telah Terdaftar Sebelumnya_*')
+  } else {
+    owner_database.push(own)
+    fs.writeFileSync('./src/owner.json', JSON.stringify(owner_database))
+    m.reply(`*_Berhasil Menambahkan ${own} Sebagai Owner_*`)
+  }
+}
+break;
+case 'delowner' : {
+  if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
+  if (!isCreator) throw mess.owner
+  let own = text.replace(/[^0-9]/g, '')
+  let own_ = JSON.parse(fs.readFileSync('./src/owner.json'))
+  let ownp = own_.indexOf(own)
+  if (ownp !== -1) {
+    owner_database.splice(ownp, 1)
+    fs.writeFileSync('./src/owner.json', JSON.stringify(owner_database))
+    m.reply(`*_Berhasil Menghapus ${own} Sebagai Owner_*`)
+  } else {
+    m.reply('*_Nomor Tidak Di Temukan_*')
+  }
+}
+break;
 case 'ban' : {
   if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
   if (!isCreator) throw mess.owner
-  let bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
+  let bnnd = text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
   let ban_ = []
   if (fs.existsSync('./src/banned.json')) {
     ban_ = JSON.parse(fs.readFileSync('./src/banned.json'))
@@ -2582,7 +2625,7 @@ break;
 case 'unban' : {
   if (!text) throw `Example : ${prefix + command} 62xxxxxxxxxxx`
   if (!isCreator) throw mess.owner
-  let bnnd = `${args[0].replace('@', '')}@s.whatsapp.net`
+  let bnnd = text.replace(/[^0-9]/g, '') + '@s.whatsapp.net'
   let ban_ = JSON.parse(fs.readFileSync('./src/banned.json'))
   let unp = ban_.indexOf(bnnd)
   if (unp !== -1) {

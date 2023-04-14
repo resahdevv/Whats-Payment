@@ -6,7 +6,8 @@
 
 const fs = require("fs");
 const chalk = require("chalk");
-const moment = require('moment-timezone');
+const moment = require("moment-timezone");
+const axios = require("axios");
 
 // Website Api
 global.APIs = {
@@ -38,6 +39,7 @@ global.reseleridkey = "Your Key",
 global.atlantickey = "Your Key",
 // End Suplier
 
+
 global.tanggalserver = `${moment.tz('Asia/Jakarta').format('DD/MM/YY')}`;
 global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`; 
 
@@ -47,6 +49,28 @@ let http = require('http')
                 (global.ipserver = ip);
             })
           })
+// Berfungsi Untuk Hit Api & Mengirim Data Headers
+const fetchJson = async (url, options = {}) => {
+  try {
+      const res = await axios({
+          method: 'GET',
+          url: url,
+          headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+          },
+          ...options
+      })
+      return res.data
+  } catch (err) {
+      return err
+  }
+}
+
+(async () => {
+  let fetch = await fetchJson(`https://www.tohastore09.com/index.json`)
+  global.versionscript = fetch.version
+  global.pesannya = fetch.message
+})();
 
 // Setting Limit
 global.limitrate = "1"; // Pengurangan Satu Limit Setiap Trx
@@ -59,10 +83,8 @@ global.minimaldepo = "10000";
 global.minimallimit = "100";
 // End Minimal
 
-global.owner = ["6285742632270"];
 global.packname = "Whats Payment";
 global.author = "RezaDevv";
-global.versionscript = "1.3.0";
 global.session = "whats-payment";
 global.mess = {
   wait: "Loading...",
