@@ -34,11 +34,15 @@ global.secretapigames = "Your Key";
 global.signatureapigames = "Your Key";
 //======>VIPRESELLER<======//
 global.reselerkey = "Your Key";
-global.reseleridkey = "Your Key",
+global.reseleridkey = "Your Key";
 //======>ATLANTIC<======//
-global.atlantickey = "Your Key",
+global.atlantickey = "Your Key";
 // End Suplier
 
+// Buyer_Sku_Code PASCABAYAR
+global.skucodepln = "Your Sku Code";
+global.skucodebpjs = "Your Sku Code";
+global.skucodepdam = "Your Sku Code";
 
 global.tanggalserver = `${moment.tz('Asia/Jakarta').format('DD/MM/YY')}`;
 global.waktuserver = `${moment.tz('Asia/Jakarta').format('HH:mm:ss')}`; 

@@ -896,7 +896,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       switch (command) {
         case "help": case "menu":
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n📍 ${prefix}owner\n\n*── 「 PASCABAYAR 」 ──*\n📍 ${prefix}tagihanpln [coming soon]\n📍 ${prefix}tagihanbpjs [coming soon]📍 ${prefix}tagihanpdam [coming soon]\n\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
+            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n📍 ${prefix}owner\n\n*── 「 PASCABAYAR 」 ──*\n📍 ${prefix}tagihanpln [no pelanggan]\n📍 ${prefix}tagihanbpjs [coming soon]📍 ${prefix}tagihanpdam [coming soon]\n\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
             client.sendText(m.chat, anu, m)   
         break;
         case "ownermenu" :
@@ -1629,7 +1629,7 @@ case "updatelayanan" : {
     break;
     case "caradigi" : {
       if (!isCreator) return m.reply (mess.owner)
-      let pesan = `*─ 「 CARA TRX DIGI 」 ─*\n*_Berikut Adalah Cara Transaksi Menggunakan Provider Digifalzz_*\n\n_Transaksi Ini Hanya Bisa Di Lakukan Oleh Owner Saja_\n\n_Untuk Melakukan Transaksi Menggunakan Digiflazz Hanya Perlu Mengetikan :_\n\n_Contoh :_\n_${prefix}topupdigi BUYER_SKU_CODE|CUTOMER_NO_\n\n_Maka :_\n_${prefix}topupdigi DANA10|085742632270_\n\n*_Begitulah Cara Melakukan Transaksi Menggunakan Provider Digiflazz Melalui Whats Payment_*`
+      let pesan = `*─ 「 CARA TRX DIGI 」 ─*\n*_Berikut Adalah Cara Transaksi Menggunakan Provider DigiFlazz_*\n\n_Transaksi Ini Hanya Bisa Di Lakukan Oleh Owner Saja_\n\n_Untuk Melakukan Transaksi Menggunakan DigiFlazz Hanya Perlu Mengetikan :_\n\n_Contoh :_\n_${prefix}topupdigi BUYER_SKU_CODE|CUTOMER_NO_\n\n_Maka :_\n_${prefix}topupdigi DANA10|085742632270_\n\n*_Begitulah Cara Melakukan Transaksi Menggunakan Provider Digiflazz Melalui Whats Payment_*`
       let buttons = [
         {buttonId: prefix + `ownermenu`, buttonText: { displayText: 'Dashboard Admin' }, type: 1}
       ]
@@ -2210,13 +2210,113 @@ case "updatelayanan" : {
           }
         }).then ((response) => response.json())
         .then ((res) => {
-          pesan = `*── 「 STATUS TRANSAKSI 」 ──*\n\n_📌 Nomor Tujuan : ${res.data.customer_no}_\n_📌 Status : ${res.data.status}_\n_📌 Message : ${res.data.message}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Waktu : ${waktuserver}_\n_📌 Tanggal : ${tanggalserver}_\n\n_*Terimakasih Telah Bertransaksi ${pushname}🥰*_`
+          pesan = `*── 「 STATUS TRANSAKSI 」 ──*\n\n_📌 Nomor Tujuan : ${res.data.customer_no}_\n_📌 Status : ${res.data.status}_\n_📌 Message : ${res.data.message}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Serial Num : ${res.data.sn.replace("","Null")}_\n_📌 Waktu : ${waktuserver}_\n_📌 Tanggal : ${tanggalserver}_\n\n_*Terimakasih Telah Bertransaksi ${pushname}🥰*_`
           let buttons = [
-            { buttonId: prefix+`cektransaksi ${refid}|${skc}|${ctn}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+            { buttonId: prefix + `cektransaksi ${refid}|${skc}|${ctn}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
           ]
           client.sendButtonText(from, buttons, `${pesan}`, `${packname}`, m)     
         })
       }
+      break;
+      case "tagihanpln" : {
+        if (isBanned) return m.reply(`*You Have Been Banned*`)
+        if (isGroup) throw mess.private
+        if (!text) return m.reply('_Masukkan Id Pelanggan_')
+        let refid = generateRandomString(10)
+        let data = {
+          commands : 'inq-pasca',
+          username : usernamekey,
+          buyer_sku_code : skucodepln,
+          customer_no : text,
+          ref_id : refid,
+          sign : md5(usernamekey + productionkey + refid)
+        }
+        fetch('https://api.digiflazz.com/v1/transaction', {
+          method : 'POST',
+          body : JSON.stringify(data),
+          header : {
+            'Content-Type': 'application/json'
+          }
+        }).then ((response) => response.json())
+        .then ((res) => {
+          message = `*── 「 INVOICE PASCABAYAR 」 ──*\n\n_📌 Id Pelanggan : ${res.data.customer_no}_\n_📌 Atas Nama : ${res.data.customer_name.replace("                ", "")}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Tarif : ${res.data.desc.tarif}_\n_📌 Daya : ${res.data.desc.daya}_\n_📌 Periode : ${res.data.desc.detail[0].periode}_\n_📌 Denda : ${formatmoney(res.data.desc.detail[0].denda.replace("", "0"))}_\n_📌 Admin : ${formatmoney(res.data.admin)}_\n_📌 Harga : ${formatmoney(res.data.price)}_\n_📌 Total Tagihan : ${formatmoney(res.data.selling_price)}_`
+          let buttons = [
+            { buttonId: prefix + `bayarpln ${res.data.customer_no}|${res.data.ref_id}|${res.data.selling_price}`, buttonText: { displayText: 'Bayar Tagihan' }, type: 1 },
+            { buttonId: prefix + `menu`, buttonText: { displayText: 'Batal Tagihan' }, type: 1 }
+          ]
+          client.sendButtonText(from, buttons, message, packname, m)
+        })
+      }
+      break;
+      case "bayarpln" : {
+        if (isBanned) return m.reply(`*You Have Been Banned*`)
+        if (isGroup) throw mess.private
+        let customer_no = text.split("|")[0]
+        let ref_id = text.split("|")[1]
+        let harga_total = text.split("|")[2]
+        if (getLimUser(sender) < limitrate) {
+          m.reply('*_Limit Transaksi Anda Kurang!. Silahkan Lakukan Buy Limit_*')
+        }
+        if (getMonUser(sender) < harga_total) {
+          m.reply('*_Saldo User Anda Kurang!. Silahkan Lakukan Deposit Saldo_*')
+        }
+        if (getLimUser(sender) > limitrate) {
+        if (getMonUser(sender) > harga_total) {
+        let data = {
+          commands : 'pay-pasca',
+          username : usernamekey,
+          buyer_sku_code : skucodepln,
+          customer_no : customer_no,
+          ref_id : ref_id,
+          sign : md5(usernamekey + productionkey + ref_id)
+        }
+        fetch('https://api.digiflazz.com/v1/transaction', {
+          method : 'POST',
+          body : JSON.stringify(data),
+          header : {
+            'Content-Type': 'application/json'
+          }
+        }).then ((response) => response.json())
+        .then ((res) => {
+          message = `*── 「 DETAIL PEMBAYARAN 」 ──*\n\n_📌 Id Pelanggan : ${res.data.customer_no}_\n_📌 Atas Nama : ${res.data.customer_name.replace("                ", "")}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Message : ${res.data.message}_\n_📌 Status : ${res.data.status}_\n_📌 Serial Num : ${res.data.sn.replace("", "Null")}_\n_📌 Total Tagihan : ${formatmoney(res.data.selling_price)}_`
+          let buttons = [
+            { buttonId: prefix + `cekpascabayar ${res.data.customer_no}|${res.data.ref_id}|${skucodepln}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+          ]
+          client.sendButtonText(from, buttons, message, packname, m)
+        })
+      }
+    }
+  }
+  break;
+  case "cekpascabayar" : {
+    if (isBanned) return m.reply(`*You Have Been Banned*`)
+    if (isGroup) throw mess.private
+    let customer_no = text.split("|")[0]
+    let ref_id = text.split("|")[1]
+    let sku_code = text.split("|")[2]
+    let data = {
+      commands : 'status-pasca',
+      username : usernamekey,
+      buyer_sku_code : sku_code,
+      customer_no : customer_no,
+      ref_id : ref_id,
+      sign : md5(usernamekey + productionkey + ref_id)
+    }
+    fetch('https://api.digiflazz.com/v1/transaction', {
+      method : 'POST',
+      body : JSON.stringify(data),
+      header : {
+        'Content-Type': 'application/json'
+      }
+    }).then ((response) => response.json())
+    .then ((res) => {
+      message = `*── 「 STATUS PASCABAYAR 」 ──*\n\n_📌 Id Pelanggan : ${res.data.customer_no}_\n_📌 Atas Nama : ${res.data.customer_name.replace("                ", "")}_\n_📌 Ref Id : ${res.data.ref_id}_\n_📌 Message : ${res.data.message}_\n_📌 Status : ${res.data.status}_\n_📌 Serial Num : ${res.data.sn.replace("", "Null")}_\n_📌 Total Tagihan : ${formatmoney(res.data.selling_price)}_`
+      let buttons = [
+        { buttonId: prefix + `cekpascabayar ${res.data.customer_no}|${res.data.ref_id}|${sku_code}`, buttonText: { displayText: 'Cek Transaksi' }, type: 1 },
+      ]
+      client.sendButtonText(from, buttons, message, packname, m)
+    })
+  }
       break;
       case 'restart' : {
       if (!isCreator) return m.reply(mess.owner)
