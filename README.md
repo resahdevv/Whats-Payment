@@ -17,7 +17,7 @@
 <br>
 <br>
 <br>── 「 PASCABAYAR 」 ──
-<br>📍 .tagihanpln [coming soon]
+<br>📍 .tagihanpln [no pelanggan]
 <br>📍 .tagihanbpjs [coming soon]
 <br>📍 .tagihanpdam [coming soon]
 
