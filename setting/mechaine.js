@@ -2632,9 +2632,7 @@ case "setapikey" : {
       ]
       client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
     }
-  }
-  
-  if (provider_0 === 'digiflazz') {
+  } else if (provider_0 === 'digiflazz') {
     if (!key_1 && !key_2) return m.reply(`${prefix + command} digiflazz|username_key|production_key`);
     let digiflazz = {
       usernamekey: key_1,
@@ -2653,9 +2651,7 @@ case "setapikey" : {
       ]
       client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
     }
-  }
-  
-  if (provider_0 === 'vip_reseller') {
+  } else if (provider_0 === 'vip_reseller') {
     if (!key_1 && !key_2) return m.reply(`${prefix + command} vip_reseller|resellerkey|reselleridkey`);
     let vip_reseller = {
       resellerkey: key_1,
@@ -2674,9 +2670,7 @@ case "setapikey" : {
       ]
       client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
     }
-  }
-  
-  if (provider_0 === 'apigames') {
+  } else if (provider_0 === 'apigames') {
     if (!key_1 && !key_2 && !key_3) return m.reply(`${prefix + command} apigames|merchant|secret|sign`);
     let apigames = {
       merchantapigames: key_1,
