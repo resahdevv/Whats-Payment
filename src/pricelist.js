@@ -43,7 +43,7 @@ let pricelistml = {
     ZIDMBL17: {
       nama: "17 Diamond",
       hargaid: 5000,
-      harga: "Rp5000",
+      harga: "Rp5.000",
     },
     ZIDMBL34: {
       nama: "34 Diamond",
