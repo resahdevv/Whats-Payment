@@ -24,21 +24,6 @@ global.APIKeys = {
 global.zenzkey = "Your Key";
 global.lolkey = "Your Key";
 
-// Start Suplier
-//======>DIGIFLAZZ<======//
-global.usernamekey = "Your Key";
-global.productionkey = "Your Key";
-//======>APIGAMES<======//
-global.merchantapigames = "Your Key";
-global.secretapigames = "Your Key";
-global.signatureapigames = "Your Key";
-//======>VIPRESELLER<======//
-global.reselerkey = "Your Key";
-global.reseleridkey = "Your Key";
-//======>ATLANTIC<======//
-global.atlantickey = "Your Key";
-// End Suplier
-
 // Buyer_Sku_Code PASCABAYAR
 global.skucodepln = "Your Sku Code";
 global.skucodebpjs = "Your Sku Code";

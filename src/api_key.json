@@ -1,0 +1,18 @@
+{
+    "digiflazz" : {
+        "usernamekey" : "Your Key",
+        "productionkey" : "Your Key"
+    },
+    "atlanticpedia" : {
+        "atlantickey" : "Your Key"
+    },
+    "vip_reseller" : {
+        "resellerkey" : "Your Key",
+        "reselleridkey" : "Your Key"
+    },
+    "apigames" : {
+        "merchantapigames" : "Your Key",
+        "secretapigames" : "Your Key",
+        "signatureapigames" : "Your Key"
+    }
+}

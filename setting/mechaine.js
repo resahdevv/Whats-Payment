@@ -21,6 +21,8 @@ const md5 = require('md5');
 const { set } = require('lodash');
 // end
 
+const api_key = require('../src/api_key.json');
+
 //code by rezadevv
 let money = JSON.parse(fs.readFileSync('./src/balance.json'))
 let limit = JSON.parse(fs.readFileSync('./src/limit.json'))
@@ -31,94 +33,9 @@ const isBanned = JSON.parse(fs.readFileSync('./src/banned.json'))
 const PathAuto = "./src/depo/"
 // end code
 
-let ptricelist = {
-  ff: {
-    UPF5: {
-      nama: "5 Diamond",
-      hargaid: 1000,
-      harga: "Rp1.000",
-    },
-    UPF12: {
-      nama: "12 Diamond",
-      hargaid: 1800,
-      harga: "Rp1.800",
-    },
-    UPF50: {
-      nama: "50 Diamond",
-      hargaid: 2700,
-      harga: "Rp2.000",
-    },
-    UPF70: {
-      nama: "70 Diamond",
-      hargaid: 10000,
-      harga: "Rp10.000",
-    },
-    UPF140: {
-      nama: "140 Diamond",
-      hargaid: 20.000,
-      harga: "Rp20.000",
-    },
-    UPF355: {
-      nama: "355 Diamond",
-      hargaid: 50000,
-      harga: "Rp50.000",
-    },
-    UPF720: {
-      nama: "720 Diamond",
-      hargaid: 100000,
-      harga: "Rp100.000",
-    },
-  },
-};
-let pricelistml  = {
-  "ml": {
-    "ZIDMBL17": {
-    "nama": "17 Diamond",
-    "hargaid": 5000,
-    "harga":"Rp5000",
-    },
-    "ZIDMBL34": {
-    "nama": "34 Diamond",
-    "hargaid": 9500,
-    "harga":"Rp9.500",
-    },
-    "ZIDMBL50": {
-    "nama": "50 Diamond",
-    "hargaid": 14000,
-    "harga":"Rp14.000",
-    },
-    "ZIDMBL66": {
-    "nama": "66 Diamond",
-    "hargaid": 18500,
-    "harga":"Rp18.500",
-    },
-    "ZIDMBL74": {
-    "nama": "74 Diamond",
-    "hargaid": 20500,
-    "harga":"Rp20.500",
-    },
-    "ZIDMBL83": {
-    "nama": "83 Diamond",
-    "hargaid": 23000,
-    "harga":"Rp23.000",
-    },
-    "ZIDMBL184": {
-    "nama": "184 Diamond",
-    "hargaid": 50500,
-    "harga":"Rp50.500",
-    },
-    "ZIDMBL366": {
-    "nama": "366 Diamond",
-    "hargaid": 100500,
-    "harga":"Rp100.500",
-    },
-    "ZIDMBL758": {
-    "nama": "758 Diamond",
-    "hargaid": 201000,
-    "harga":"Rp201.000",
-    },
- },
-}
+const { pricelist, pricelistml } = require('../src/pricelist')
+
+
 
 
 // is function
@@ -253,6 +170,15 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
     const reply = m.reply;
     const sender = m.sender;
     const mek = chatUpdate.messages[0];
+    const usernamekey = api_key.digiflazz.usernamekey;
+    const productionkey = api_key.digiflazz.productionkey;
+    const atlantickey = api_key.atlanticpedia.atlantickey;
+    const reselerkey = api_key.vip_reseller.resellerkey;
+    const reseleridkey = api_key.vip_reseller.reselleridkey;
+    const merchantapigames = api_key.apigames.merchantapigames;
+    const secretapigames = api_key.apigames.secretapigames;
+    const signatureapigames = api_key.apigames.signatureapigames;
+
 
 
     const cUrl = (url, method, payload = {}) => {
@@ -901,7 +827,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
         break;
         case "ownermenu" :
         if (!isCreator) throw mess.owner
-        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}caradigi (owner only)\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}updatelayanan\n📍 ${prefix}cekatc (balance)\n📍 ${prefix}cekvip (balance)\n📍 ${prefix}cekdigi (balance)\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}listowner\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx\n📍 ${prefix}addowner 6285xxxxxxxxx\n📍 ${prefix}delowner 6285xxxxxxxxx`
+        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}caradigi (owner only)\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}setapikey [option]\n📍 ${prefix}cekapi\n📍 ${prefix}updatelayanan\n📍 ${prefix}cekatc (balance)\n📍 ${prefix}cekvip (balance)\n📍 ${prefix}cekdigi (balance)\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}listowner\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx\n📍 ${prefix}addowner 6285xxxxxxxxx\n📍 ${prefix}delowner 6285xxxxxxxxx`
         client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
@@ -1861,7 +1787,7 @@ case "updatelayanan" : {
       case "listdmff" : 
       if (isBanned) return m.reply(`*You Have Been Banned*`)
       if (isGroup) throw mess.private
-      lisnya = `*── 「 DIAMOND FREE FIRE 」 ──*\n\n_📍 ${ptricelist.ff.UPF5.nama} : ${ptricelist.ff.UPF5.harga}_\n_📍 ${ptricelist.ff.UPF12.nama} : ${ptricelist.ff.UPF12.harga}_\n_📍 ${ptricelist.ff.UPF50.nama} : ${ptricelist.ff.UPF50.harga}_\n_📍 ${ptricelist.ff.UPF70.nama} : ${ptricelist.ff.UPF70.harga}_\n_📍 ${ptricelist.ff.UPF140.nama} : ${ptricelist.ff.UPF140.harga}_\n_📍 ${ptricelist.ff.UPF355.nama} : ${ptricelist.ff.UPF355.harga}_\n_📍 ${ptricelist.ff.UPF720.nama} : ${ptricelist.ff.UPF720.harga}_\n\nCara Pembelian:\n${prefix}topupff ID|JUMLAH_DIAMOND\n\nExample:\n${prefix}topupff 123456789|1450\n\nNote: *Transaksi akan diproses otomatis oleh sistem tunggu 3-5 menit atau cek secara berkala.*`
+      lisnya = `*── 「 DIAMOND FREE FIRE 」 ──*\n\n_📍 ${pricelist.ff.UPF5.nama} : ${pricelist.ff.UPF5.harga}_\n_📍 ${pricelist.ff.UPF12.nama} : ${pricelist.ff.UPF12.harga}_\n_📍 ${pricelist.ff.UPF50.nama} : ${pricelist.ff.UPF50.harga}_\n_📍 ${pricelist.ff.UPF70.nama} : ${pricelist.ff.UPF70.harga}_\n_📍 ${pricelist.ff.UPF140.nama} : ${pricelist.ff.UPF140.harga}_\n_📍 ${pricelist.ff.UPF355.nama} : ${pricelist.ff.UPF355.harga}_\n_📍 ${pricelist.ff.UPF720.nama} : ${pricelist.ff.UPF720.harga}_\n\nCara Pembelian:\n${prefix}topupff ID|JUMLAH_DIAMOND\n\nExample:\n${prefix}topupff 123456789|1450\n\nNote: *Transaksi akan diproses otomatis oleh sistem tunggu 3-5 menit atau cek secara berkala.*`
       m.reply(lisnya)
       break;
       case "listdmml" :
@@ -2671,6 +2597,108 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
     }
     let msg = await client.sendMessage(m.chat, buttonMessage, { quoted: m })
     client.sendMessage(m.chat, { audio: { url: anu.result.music.play_url }, mimetype: 'audio/mpeg'}, { quoted: msg })
+}
+break;
+case "cekapi" : {
+  if (!isCreator) throw mess.owner
+  if (isGroup) throw mess.private
+  message = `L i s t A p i K e y\n\n_Digiflazz:_\n- ${usernamekey}\n- ${productionkey}\n\n_Atlantic Pedia:_\n- ${atlantickey}\n\n_Vip-Reseller_\n- ${reselerkey}\n- ${reseleridkey}\n\n_Api Games:_\n- ${merchantapigames}\n- ${secretapigames}\n- ${signatureapigames}`
+  client.sendMessage(m.chat, { text: message })
+}
+break;
+case "setapikey" : {
+  if (!isCreator) throw mess.owner
+  if (isGroup) throw mess.private
+  let provider_0 = text.split("|")[0]
+  let key_1 = text.split("|")[1]
+  let key_2 = text.split("|")[2]
+  let key_3 = text.split("|")[3]
+  if (!provider_0) return m.reply('```Masukkan Provider```\n```Provider Yang Tersedia```\n\n```📍 digiflazz```\n```📍 atlanticpedia```\n```📍 vip_reseller```\n```📍 apigames```\n\n```Jadi, contoh:```\n```.setapikey digiflazz|user|product```')
+  if (provider_0 === 'atlanticpedia') {
+    if (!key_1) return m.reply(`${prefix + command} atlaticpedia|api_key`);
+    let atlanticpedia = {
+      atlantickey: key_1
+    };
+    let data = fs.readFileSync('./src/api_key.json');
+    let jsonData = JSON.parse(data);
+    if (jsonData.atlanticpedia.atlantickey === key_1) {
+      m.reply('```Data yang sama telah dimasukkan```');
+    } else {
+      jsonData.atlanticpedia = atlanticpedia;
+      fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
+      let message = '```Berhasil Update Api Atc```'
+      let buttons = [
+        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+      ]
+      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+    }
+  }
+  
+  if (provider_0 === 'digiflazz') {
+    if (!key_1 && !key_2) return m.reply(`${prefix + command} digiflazz|username_key|production_key`);
+    let digiflazz = {
+      usernamekey: key_1,
+      productionkey: key_2
+    };
+    let data = fs.readFileSync('./src/api_key.json');
+    let jsonData = JSON.parse(data);
+    if (jsonData.digiflazz.usernamekey === key_1 && jsonData.digiflazz.productionkey === key_2) {
+      m.reply('```Data yang sama telah dimasukkan```');
+    } else {
+      jsonData.digiflazz = digiflazz;
+      fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
+      let message = '```Berhasil Update Api Digi```'
+      let buttons = [
+        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+      ]
+      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+    }
+  }
+  
+  if (provider_0 === 'vip_reseller') {
+    if (!key_1 && !key_2) return m.reply(`${prefix + command} vip_reseller|resellerkey|reselleridkey`);
+    let vip_reseller = {
+      resellerkey: key_1,
+      reselleridkey: key_2
+    };
+    let data = fs.readFileSync('./src/api_key.json');
+    let jsonData = JSON.parse(data);
+    if (jsonData.vip_reseller.reselerkey === key_1 && jsonData.vip_reseller.reselleridkey === key_2) {
+      m.reply('```Data yang sama telah dimasukkan```');
+    } else {
+      jsonData.vip_reseller = vip_reseller;
+      fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
+      let message = '```Berhasil Update Api Vip```'
+      let buttons = [
+        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+      ]
+      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+    }
+  }
+  
+  if (provider_0 === 'apigames') {
+    if (!key_1 && !key_2 && !key_3) return m.reply(`${prefix + command} apigames|merchant|secret|sign`);
+    let apigames = {
+      merchantapigames: key_1,
+      secretapigames: key_2,
+      signatureapigames: key_3
+    };
+    let data = fs.readFileSync('./src/api_key.json');
+    let jsonData = JSON.parse(data);
+    if (jsonData.apigames.merchantapigames === key_1 && jsonData.apigames.secretapigames === key_2 && jsonData.apigames.signatureapigames === key_3) {
+      m.reply('```Data yang sama telah dimasukkan```');
+    } else {
+      jsonData.apigames = apigames;
+      fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
+      let message = '```Berhasil Update Api Games```'
+      let buttons = [
+        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+      ]
+      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+    }
+  } else {
+    m.reply('```Provider Tidak Di Temukan```')
+  }
 }
 break;
 case 'addowner' : {

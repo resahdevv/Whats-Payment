@@ -656,7 +656,7 @@ async function startEza() {
       console.log(color(`Whats Payment Version ${versionscript}`, "green"));
       console.log(color("Ketik .menu untuk menampilkan menu", "blue"));
       console.log(color("Checking Version...", "yellow"))
-      if (versionscript !== "1.4.0") {
+      if (versionscript !== "1.5.0") {
         console.log(pesannya)
       } else {
         console.log(color("Ini Adalah Versi Terbaru", "cyan"))

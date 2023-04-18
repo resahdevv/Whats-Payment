@@ -26,6 +26,8 @@
 <br>📍 .caradigi (owner only)
 <br>📍 .addmoney 1000|62857xxxxxxxx
 <br>📍 .addlimit 100|62857xxxxxxxx
+<br>📍 .setapikey
+<br>📍 .cekapi
 <br>📍 .updatelayanan
 <br>📍 .cekatc (balance)
 <br>📍 .cekvip (balance)
