@@ -21,8 +21,6 @@ const md5 = require('md5');
 const { set } = require('lodash');
 // end
 
-const api_key = require('../src/api_key.json');
-
 //code by rezadevv
 let money = JSON.parse(fs.readFileSync('./src/balance.json'))
 let limit = JSON.parse(fs.readFileSync('./src/limit.json'))
@@ -170,14 +168,15 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
     const reply = m.reply;
     const sender = m.sender;
     const mek = chatUpdate.messages[0];
-    const usernamekey = api_key.digiflazz.usernamekey;
-    const productionkey = api_key.digiflazz.productionkey;
-    const atlantickey = api_key.atlanticpedia.atlantickey;
-    const reselerkey = api_key.vip_reseller.resellerkey;
-    const reseleridkey = api_key.vip_reseller.reselleridkey;
-    const merchantapigames = api_key.apigames.merchantapigames;
-    const secretapigames = api_key.apigames.secretapigames;
-    const signatureapigames = api_key.apigames.signatureapigames;
+    // Manggil Kunci Api
+    const usernamekey = JSON.parse(fs.readFileSync('./src/api_key.json')).digiflazz.usernamekey;
+    const productionkey = JSON.parse(fs.readFileSync('./src/api_key.json')).digiflazz.productionkey;
+    const atlantickey = JSON.parse(fs.readFileSync('./src/api_key.json')).atlanticpedia.atlantickey;
+    const reselerkey = JSON.parse(fs.readFileSync('./src/api_key.json')).vip_reseller.resellerkey;
+    const reseleridkey = JSON.parse(fs.readFileSync('./src/api_key.json')).vip_reseller.reselleridkey;
+    const merchantapigames = JSON.parse(fs.readFileSync('./src/api_key.json')).apigames.merchantapigames;
+    const secretapigames = JSON.parse(fs.readFileSync('./src/api_key.json')).apigames.secretapigames;
+    const signatureapigames = JSON.parse(fs.readFileSync('./src/api_key.json')).apigames.signatureapigames;
 
 
 
@@ -2628,9 +2627,9 @@ case "setapikey" : {
       fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
       let message = '```Berhasil Update Api Atc```'
       let buttons = [
-        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+        {buttonId: prefix + `cekapi`, buttonText: { displayText: 'Cek Api' }, type: 1}
       ]
-      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+      client.sendButtonText(from, buttons, message, 'Cek api For view changes', m) 
     }
   } else if (provider_0 === 'digiflazz') {
     if (!key_1 && !key_2) return m.reply(`${prefix + command} digiflazz|username_key|production_key`);
@@ -2647,9 +2646,9 @@ case "setapikey" : {
       fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
       let message = '```Berhasil Update Api Digi```'
       let buttons = [
-        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+        {buttonId: prefix + `cekapi`, buttonText: { displayText: 'Cek Api' }, type: 1}
       ]
-      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+      client.sendButtonText(from, buttons, message, 'Cek api For view changes', m) 
     }
   } else if (provider_0 === 'vip_reseller') {
     if (!key_1 && !key_2) return m.reply(`${prefix + command} vip_reseller|resellerkey|reselleridkey`);
@@ -2666,9 +2665,9 @@ case "setapikey" : {
       fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
       let message = '```Berhasil Update Api Vip```'
       let buttons = [
-        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+        {buttonId: prefix + `cekapi`, buttonText: { displayText: 'Cek Api' }, type: 1}
       ]
-      client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
+      client.sendButtonText(from, buttons, message, 'Cek api For view changes', m) 
     }
   } else if (provider_0 === 'apigames') {
     if (!key_1 && !key_2 && !key_3) return m.reply(`${prefix + command} apigames|merchant|secret|sign`);
@@ -2686,7 +2685,7 @@ case "setapikey" : {
       fs.writeFileSync('./src/api_key.json', JSON.stringify(jsonData, null, 2));
       let message = '```Berhasil Update Api Games```'
       let buttons = [
-        {buttonId: prefix + `restart`, buttonText: { displayText: 'Restart' }, type: 1}
+        {buttonId: prefix + `cekapi`, buttonText: { displayText: 'Cek Api' }, type: 1}
       ]
       client.sendButtonText(from, buttons, message, 'Retart For Apply Changes', m) 
     }
