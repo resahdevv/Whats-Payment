@@ -31,10 +31,9 @@ const isBanned = JSON.parse(fs.readFileSync('./src/banned.json'))
 const PathAuto = "./src/depo/"
 // end code
 
+const db_respon_list = JSON.parse(fs.readFileSync('./src/db_list.json'))
 const { pricelist, pricelistml } = require('../src/pricelist')
-
-
-
+const { addResponList, delResponList, isAlreadyResponList, isAlreadyResponListGroup, sendResponList, updateResponList, getDataResponList } = require('../src/function_list')
 
 // is function
 const formatp = sizeFormatter({
@@ -411,6 +410,15 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
         chalk.green(groupName)
       );
     }
+
+    if (!isCmd2 && m.isGroup && isAlreadyResponList(from, chath, db_respon_list)) {
+      var get_data_respon = getDataResponList(from, chath, db_respon_list)
+      if (get_data_respon.isImage === false) {
+      client.sendMessage(from, { text: sendResponList(from, chath, db_respon_list) }, { quoted: m })
+    } else {
+      client.sendMessage(from, { image: await getBuffer(get_data_respon.image_url), caption: get_data_respon.response }, { quoted: m })
+    }
+  }
 
     if (command === 'pulsa') {
       if (!fs.existsSync(PathAuto + `${sender}1` + ".json")) {
@@ -2241,6 +2249,69 @@ case "updatelayanan" : {
       ]
       client.sendButtonText(from, buttons, message, packname, m)
     })
+  }
+  break;
+  case "store" : case "list" : {
+    if (!isGroup) return m.reply(mess.group)
+    if (db_respon_list.length === 0) return m.reply('```Belum Ada List```')
+    if (!isAlreadyResponListGroup(from, db_respon_list)) return m.reply('```Belum Ada List Terdaftar Di Group Ini```')
+    var arr_rows = [];
+    for (let x of db_respon_list) {
+      if (x.id === from) {
+        arr_rows.push({
+          title: x.key,
+          rowId: x.key
+        })
+      }
+    }
+    var listMsg = {
+      text: `Hi Kak ${pushname ? pushname : "Anon"}`,
+      buttonText: 'Select One Option',
+      footer: `_List From ${groupName}_`,
+      mentions: [sender],
+      sections: [{
+        title: groupName, rows: arr_rows
+      }]
+    }
+    client.sendMessage(from, listMsg)
+  }
+  break;
+  case "addlist" : {
+    if (!isGroup) return m.reply(mess.group)
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (!isAdmins) return m.reply(mess.admin)
+    if (!isCreator) return m.reply(mess.owner)
+    let text1 = text.split("|")[0]
+    let text2 = text.split("|")[1]
+    if (!text.includes("|")) return m.reply(`Gunakan dengan cara ${prefix + command} *_key|response_*`)
+    if (isAlreadyResponList(from, text1, db_respon_list)) return m.reply(`List Response Dengan Key *${text1}* Telah Tersedia Di Group Ini`)
+    addResponList(from, text1, text2, false, '-', db_respon_list)
+    m.reply(`*_Berhasil Menambah List ${text1}_*`)
+  }
+  break;
+  case "dellist" : {
+    if (!isGroup) return m.reply(mess.group)
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (!isAdmins) return m.reply(mess.admin)
+    if (!isCreator) return m.reply(mess.owner)
+    if (db_respon_list.length === 0) return m.reply('```Belum Ada List Di Database```')
+    if (!text) return m.reply(`Example: ${prefix + command} *_key_*`)
+    if (!isAlreadyResponList(from, text, db_respon_list)) return m.reply(`List Response Dengan Key *_${text}_* Tidak Di Temukan`)
+    delResponList(from, text, db_respon_list)
+    m.reply(`*_Sukses Delete List Dengan Key ${text}_*`)
+  }
+  break;
+  case "update" : {
+    if (!isGroup) return m.reply(mess.group)
+    if (!isBotAdmins) return m.reply(mess.botAdmin)
+    if (!isAdmins) return m.reply(mess.admin)
+    if (!isCreator) return m.reply(mess.owner)
+    var text1 = text.split("|")[0]
+    var text2 = text.split("|")[1]
+    if (!text.includes("|")) return m.reply(`Gunakan dengan cara ${prefix + command} *_key|response_*`)
+    if (!isAlreadyResponListGroup(from, db_respon_list)) return m.reply(`Maaf, Untuk Key *${text1}* Belum Terdaftar`)
+    updateResponList(from, text1, text2, false, '-', db_respon_list)
+    m.reply(`*_Berhasil Update List ${text1}_*`)
   }
       break;
       case 'restart' : {
