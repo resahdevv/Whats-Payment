@@ -152,7 +152,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
     const args = body.trim().split(/ +/).slice(1);
     const pushname = m.pushName || "No Name";
     const botNumber = await client.decodeJid(client.user.id);
-    const isCreator = [botNumber, ...JSON.parse(fs.readFileSync('./src/owner.json'))].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
+    const isCreator = [botNumber, ...owner_database].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
     const isBanned = ban.includes(m.sender)    
     const itsMe = m.sender == botNumber ? true : false;
     let text = (q = args.join(" "));
@@ -1664,12 +1664,24 @@ case "updatelayanan" : {
       let bukti = `*─ 「 DEPOSIT USER 」 ─*\n*_User Deposite Request_*\n_📍 Balance Before : ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n_📍 Deposit : ${depos}_\n_📍 Uid : ${sender.replace("@s.whatsapp.net", "")}_\n_📍 Catatan : ${catatnya}_\n\n*_Identifikasi Bukti Dengan Cermat Agar Tidak Terjadi Penipuan!._*`
       if (/image/.test(mime)) {
         let media = await quoted.download()
-        client.sendImage(`${owner}@s.whatsapp.net`, media, `Request From: ${sender.replace("@s.whatsapp.net", "")}`, m)
-        let buttons = [
-          { buttonId: prefix+`deposetuju ${depo}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
-          { buttonId: prefix+`depotidak ${m.sender}`, buttonText: { displayText: 'Tidak Setuju' }, type: 1 }
-        ]
-        client.sendButtonText(owner+`@s.whatsapp.net`, buttons, `${bukti}`, `${packname}`, m)
+        let count = owner_database.length;
+        let sentCount = 0;
+        m.reply('```Sedang Mengirim Permintaan```')
+        for (let i = 0; i < owner_database.length; i++) {
+          setTimeout( function() {
+            client.sendImage(owner_database[i] + '@s.whatsapp.net', media, `Request From: ${sender.replace("@s.whatsapp.net", "")}`, m)
+            let buttons = [
+              { buttonId: prefix+`deposetuju ${depo}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
+              { buttonId: prefix+`depotidak ${m.sender}`, buttonText: { displayText: 'Tidak Setuju' }, type: 1 }
+            ]
+            client.sendButtonText(owner_database[i] + `@s.whatsapp.net`, buttons, `${bukti}`, `${packname}`, m)
+            count--;
+            sentCount++;
+            if (count === 0) {
+              m.reply('```Permintaan Terkirim:```' + sentCount)
+            }
+          })
+        }
       }
     }
       break;
@@ -1705,12 +1717,24 @@ case "updatelayanan" : {
       let buktipembayaran = `*─ 「 BUY LIMIT USER 」 ─*\n*_User Limit Request_*\n_📍 Limit Before : ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "0,00")}_\n_📍 Limit : ${limits}_\n_📍 Uid : ${sender.replace("@s.whatsapp.net", "")}_\n_📍 Catatan : ${noted}_\n\n*_Identifikasi Bukti Dengan Cermat Agar Tidak Terjadi Penipuan!._*`
       if (/image/.test(mime)) {
         let media = await quoted.download()
-        client.sendImage(`${owner}@s.whatsapp.net`, media, `Request From: ${sender.replace("@s.whatsapp.net", "")}`, m)
-        let buttons = [
-          { buttonId: prefix+`limitsetuju ${limitnya}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
-          { buttonId: prefix+`limittolak ${m.sender}`, buttonText: { displayText: 'Tidak Setuju' }, type: 1 }
-        ]
-        client.sendButtonText(owner+`@s.whatsapp.net`, buttons, `${buktipembayaran}`, `${packname}`, m)
+        let count = owner_database.length;
+        let sentCount = 0;
+        m.reply('```Sedang Mengirim Permintaan```')
+        for (let i = 0; i < owner_database.length; i++) {
+          setTimeout(function() {
+            client.sendImage(owner_database[i] + '@s.whatsapp.net', media, `Request From: ${sender.replace("@s.whatsapp.net", "")}`, m)
+            let buttons = [
+              { buttonId: prefix+`limitsetuju ${limitnya}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
+              { buttonId: prefix+`limittolak ${m.sender}`, buttonText: { displayText: 'Tidak Setuju' }, type: 1 }
+            ]
+            client.sendButtonText(owner_database[i] + `@s.whatsapp.net`, buttons, `${buktipembayaran}`, `${packname}`, m)
+            count--;
+            sentCount++;
+            if (count === 0) {
+              m.reply('```Permintaan Terkirim:```' + sentCount)
+            }
+          }, i * 2000)
+        }
       }
     }
     break;
@@ -1806,7 +1830,7 @@ case "updatelayanan" : {
         break;
         case 'owner': case 'creator': {
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-          client.sendContact(m.chat, JSON.parse(fs.readFileSync('./src/owner.json')), m)
+          client.sendContact(m.chat, owner_database, m)
         }
       break;
       case 'topupff': {
