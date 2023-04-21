@@ -1668,7 +1668,7 @@ case "updatelayanan" : {
         let sentCount = 0;
         m.reply('```Sedang Mengirim Permintaan```')
         for (let i = 0; i < owner_database.length; i++) {
-          setTimeout( function() {
+          setTimeout(function() {
             client.sendImage(owner_database[i] + '@s.whatsapp.net', media, `Request From: ${sender.replace("@s.whatsapp.net", "")}`, m)
             let buttons = [
               { buttonId: prefix+`deposetuju ${depo}|${m.sender}`, buttonText: { displayText: 'Setuju' }, type: 1 },
@@ -1680,7 +1680,7 @@ case "updatelayanan" : {
             if (count === 0) {
               m.reply('```Permintaan Terkirim:```' + sentCount)
             }
-          })
+          }, i * 2000)
         }
       }
     }
