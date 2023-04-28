@@ -829,12 +829,12 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
       switch (command) {
         case "help": case "menu":
           if (isBanned) return m.reply(`*You Have Been Banned*`)
-            anu = `*Whats Payment Versi ${versionscript}*\n\n➤ _Name: ${m.pushName}_\n➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n➤ _Runtime: ${runtime(process.uptime())}_\n➤ _User Length: ${signup.length}_\n\n⭓ *List Menu*\n📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n📍 ${prefix}topup (sultan)\n📍 ${prefix}listgame\n📍 ${prefix}caradepo\n📍 ${prefix}pulsamenu\n📍 ${prefix}plnmenu\n📍 ${prefix}emoneymenu\n📍 ${prefix}owner\n\n*── 「 PASCABAYAR 」 ──*\n📍 ${prefix}tagihanpln [no pelanggan]\n📍 ${prefix}tagihanbpjs [coming soon]📍 ${prefix}tagihanpdam [coming soon]\n\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
+            anu = `*_Whats Payment Versi ${versionscript}_*\n\n╭─❑ 「 INFO USER 」 ❑──\n│ ➤ _Name: ${m.pushName}_\n│ ➤ _Balance: ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n│ ➤ _Limit Trx: ${formatmoney(getLimUser(sender) ? getLimUser(sender) : "Rp 0,00")}_\n│ ➤ _Uid: ${sender.replace("@s.whatsapp.net", "")}_\n│ ➤ _Runtime: ${runtime(process.uptime())}_\n│ ➤ _User Length: ${signup.length}_\n╰❑\n\n╭─❑ 「 LIST MENU CENTER 」 ❑─\n*USER INTERFACE*\n├• 📍 ${prefix}kirimsaldo 1000|6285xxxxxxxxx\n├• 📍 ${prefix}kirimlimit 1000|6285xxxxxxxxx\n├• 📍 ${prefix}caradepo\n├• 📍 ${prefix}owner\n\n*── 「 PRABAYAR 」 ──*\n├• 📍 ${prefix}topup (sultan)\n├• 📍 ${prefix}listgame\n├• 📍 ${prefix}pulsamenu\n├• 📍 ${prefix}plnmenu\n├• 📍 ${prefix}emoneymenu\n\n*── 「 PASCABAYAR 」 ──*\n├• 📍 ${prefix}tagihanpln [no pelanggan]\n├• 📍 ${prefix}tagihanbpjs [coming soon]\n├• 📍 ${prefix}tagihanpdam [coming soon]\n╰❑\n\n*_📅 Tanggal Server : ${tanggalserver}_*\n*_🕒 Waktu Server : ${waktuserver}_*`
             client.sendText(m.chat, anu, m)   
         break;
         case "ownermenu" :
         if (!isCreator) throw mess.owner
-        srh = `*Owner Menu Page ${versionscript}*\n\n📍 ${prefix}caradigi (owner only)\n📍 ${prefix}addmoney 1000|62857xxxxxxxx\n📍 ${prefix}addlimit 100|62857xxxxxxxx\n📍 ${prefix}setapikey [option]\n📍 ${prefix}cekapi\n📍 ${prefix}updatelayanan\n📍 ${prefix}cekatc (balance)\n📍 ${prefix}cekvip (balance)\n📍 ${prefix}cekdigi (balance)\n📍 ${prefix}listban\n📍 ${prefix}listuser\n📍 ${prefix}listowner\n📍 ${prefix}ban 6285xxxxxxxxx\n📍 ${prefix}unban 6285xxxxxxxxx\n📍 ${prefix}addowner 6285xxxxxxxxx\n📍 ${prefix}delowner 6285xxxxxxxxx`
+        srh = `*_Owner Menu Page ${versionscript}_*\n\n╭─❑ 「 OWNER MENU PAGE 」 ❑─\n├• 📍 ${prefix}caradigi (owner only)\n├• 📍 ${prefix}addmoney 1000|62857xxxxxxxx\n├• 📍 ${prefix}addlimit 100|62857xxxxxxxx\n├• 📍 ${prefix}setapikey [option]\n├• 📍 ${prefix}cekapi\n├• 📍 ${prefix}updatelayanan\n├• 📍 ${prefix}cekatc (balance)\n├• 📍 ${prefix}cekvip (balance)\n├• 📍 ${prefix}cekdigi (balance)\n├• 📍 ${prefix}listban\n├• 📍 ${prefix}listuser\n├• 📍 ${prefix}listowner\n├• 📍 ${prefix}ban 6285xxxxxxxxx\n├• 📍 ${prefix}unban 6285xxxxxxxxx\n├• 📍 ${prefix}addowner 6285xxxxxxxxx\n├• 📍 ${prefix}delowner 6285xxxxxxxxx\n╰❑`
         client.sendText(m.chat, srh, m)   
         break;
         case "topup": {
@@ -854,7 +854,7 @@ module.exports = reza = async (client, m, chatUpdate, store) => {
         ]
           },
       ]
-      let isian = `_*User Profile Account*_\n_📍 Name : ${pushname}_\n_📍 Balance : ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n_📍 Uid : ${sender.replace("@s.whatsapp.net", "")}_\n\nNote: *Saldo Hanya Digunakan Untuk Top Up Saja, Tidak Bisa Withdraw😉!.*`
+      let isian = `_*User Profile Account*_\n_📍 Name : ${pushname}_\n_📍 Balance : ${formatmoney(getMonUser(sender) ? getMonUser(sender) : "Rp 0,00")}_\n_📍 Uid : ${sender.replace("@s.whatsapp.net", "")}_\n\nNote: *_Saldo Hanya Digunakan Untuk Top Up Saja, Tidak Bisa Withdraw😉!._*`
       const listMessage = {
         text: isian,
         footer: "By @RezaDevv",

@@ -656,7 +656,7 @@ async function startEza() {
       console.log(color(`Whats Payment Version ${versionscript}`, "green"));
       console.log(color("Ketik .menu untuk menampilkan menu", "blue"));
       console.log(color("Checking Version...", "yellow"))
-      if (versionscript !== "1.5.0") {
+      if (versionscript !== "1.6.0") {
         console.log(pesannya)
       } else {
         console.log(color("Ini Adalah Versi Terbaru", "cyan"))
@@ -666,7 +666,7 @@ async function startEza() {
         for (let i = 0; i < owner.length; i++) {
           setTimeout(function() {
             client.sendMessage(owner[i] + '@s.whatsapp.net', {
-              text: `*_Hi Owner Whats Payment, Server Whats Payment Berhasil Aktif_*\n\n*_Detail Configurasi Server :_*\n_Packname : ${packname}_\n_Author : ${author}_\n_Profit : ${profit}_\n_Session : ${session}_\n_IP Server : ${ipserver}_\n\n*_Tanggal Server : ${tanggalserver}_*\n*_Waktu Server : ${waktuserver}_*`,
+              text: `╭──❒ *CONFIGURATION BOT*.\n➥ *_Hi Owner Whats Payment, Server Whats Payment Berhasil Aktif_*\n\n➥ *_Detail Configurasi Server :_*\n├• _Packname : ${packname}_\n├• _Author : ${author}_\n├• _Profit : ${profit}_\n├• _Session : ${session}_\n├• _IP Server : ${ipserver}_\n\n├• *_Tanggal Server : ${tanggalserver}_*\n├• *_Waktu Server : ${waktuserver}_*\n╰❑`,
             });
             count--;
             sentCount++;
